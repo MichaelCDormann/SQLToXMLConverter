@@ -19,7 +19,7 @@ https://www.sourcetreeapp.com/
 If you use some kind of GUI this wont apply, and you'll have to learn how to use Git with whatever application you chose.
 
 You'll need to create a folder where you're going to clone this repository into. Then with command promp/terminal open and navigated to that folder use:
-`git clone ` 
+`git clone https://github.com/MichaelCDormann/SQLToXMLConverter.git` 
 
 Now you can get to work writing code. First, make sure you're working on the latest version with everyone's changes:
  `git pull`
