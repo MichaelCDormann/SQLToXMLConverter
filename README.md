@@ -1,5 +1,7 @@
 ## Using Github
 
+(Since some of you haven't used it before)
+
 ### Installation 
 There are two ways to install and use git on Windows, through a command line or though a GUI.
 
@@ -39,3 +41,6 @@ Git will automatically notify you and help resolve the issue if there are any me
 
 Another usefull command, to see the current status of your working folder.:
 `git status` 
+
+A good guide:
+http://readwrite.com/2013/09/30/understanding-github-a-journey-for-beginners-part-1/
