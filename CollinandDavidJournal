@@ -4,6 +4,7 @@ Collin- created a XML class, we know we will be handed a ResultSet object and Ar
 -They will just have to call XML()
 -Copied while loop from example to traverse the ResultSet
 
-
+Collin 5:45pm
+ - adding to the while loop printing tags before printing each attribute as
 
 

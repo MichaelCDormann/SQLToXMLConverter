@@ -13,16 +13,22 @@ import java.util.ArrayList;
 
 public class xmlFormat {
 
+	
 public static void XML(ResultSet rSet, ArrayList<Attribute> aList)
 {
 	int colCount = 1;			//used to keep track of what column we are in
 	int rowCount = 0;			//used to keep track of row
 	
-	try{
 	
+	try{
 	while(rSet.next())
 	{
-		;
+		String colName=	aList.get(colCount).name;
+		System.out.println("<" + colName + ">");
+		rSet.getObject(colName);
+		System.out.println("</" + colName + ">");
+		
+		
 	}
 	
 	}
