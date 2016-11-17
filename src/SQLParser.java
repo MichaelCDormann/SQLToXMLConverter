@@ -11,4 +11,14 @@ public class SQLParser {
 		
 	}
 	
+	public void parseQuery(String query){
+		
+		/* 
+		 * parse query here
+		 */
+		
+	}
+	
+	
+	
 }
