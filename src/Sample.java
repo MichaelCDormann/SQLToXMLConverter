@@ -42,14 +42,14 @@ import java.util.ArrayList;
 		testList.add(temp2);
 	   		
         ResultSet resultSet = DB.query("SELECT * from person");
-           while(resultSet.next())
-           {
-              // iterate & read the result set
-              System.out.println("name = " + resultSet.getString("name"));
-              System.out.println("id = " + resultSet.getInt("id"));
-           }
-           DB.close();
-          }
+        while(resultSet.next())
+        {
+        	// iterate & read the result set
+            System.out.println("name = " + resultSet.getString("name"));
+            System.out.println("id = " + resultSet.getInt("id"));
+        }
+            DB.close();
+      }
       
 
      catch(SQLException e){  System.err.println(e.getMessage()); }       
