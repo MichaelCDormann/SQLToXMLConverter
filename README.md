@@ -1,3 +1,7 @@
+## SQLite DB
+
+http://stackoverflow.com/questions/24963259/need-help-setting-up-sqlite-on-eclipse-with-java-for-the-first-time
+
 ## Using Github
 
 (Since some of you haven't used it before)
