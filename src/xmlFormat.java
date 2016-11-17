@@ -15,7 +15,21 @@ public class xmlFormat {
 
 public static void XML(ResultSet rSet, ArrayList<Attribute> aList)
 {
+	int colCount = 1;			//used to keep track of what column we are in
+	int rowCount = 0;			//used to keep track of row
 	
+	try{
+	
+	while(rSet.next())
+	{
+		;
+	}
+	
+	}
+	 catch (SQLException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
 	
 }
 	
