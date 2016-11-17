@@ -1,8 +1,8 @@
 import java.sql.Connection;
-   import java.sql.DriverManager;
-   import java.sql.ResultSet;
-   import java.sql.SQLException;
-   import java.sql.Statement;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 
    public class Sample
     {
@@ -11,40 +11,44 @@ import java.sql.Connection;
       // load the sqlite-JDBC driver using the current class loader
       Class.forName("org.sqlite.JDBC");
 
-      Connection connection = null;
+      //Connection connection = null;
       try
       {
          // create a database connection
-         connection = DriverManager.getConnection("jdbc:sqlite:sample.db");
+         /*connection = DriverManager.getConnection("jdbc:sqlite:sample.db");
 
          Statement statement = connection.createStatement();
-         statement.setQueryTimeout(30);  // set timeout to 30 sec.
+         statement.setQueryTimeout(30);  // set timeout to 30 sec.*/
+    	  
+    	 Database DB = new Database("jdbc:sqlite:sample.db", "", "");
 
 
-         statement.executeUpdate("DROP TABLE IF EXISTS person");
-         statement.executeUpdate("CREATE TABLE person (id INTEGER, name STRING)");
+         DB.query("DROP TABLE IF EXISTS person");
+         DB.query("CREATE TABLE person (id INTEGER, name STRING)");
 
          int ids [] = {1,2,3,4,5};
          String names [] = {"Peter","Pallar","William","Paul","James Bond"};
 
          for(int i=0;i<ids.length;i++){
-              statement.executeUpdate("INSERT INTO person values(' "+ids[i]+"', '"+names[i]+"')");   
+              DB.query("INSERT INTO person values(' "+ids[i]+"', '"+names[i]+"')"); 
          }
 
          //statement.executeUpdate("UPDATE person SET name='Peter' WHERE id='1'");
          //statement.executeUpdate("DELETE FROM person WHERE id='1'");
 
-           ResultSet resultSet = statement.executeQuery("SELECT * from person");
+           ResultSet resultSet = DB.query("SELECT * from person");
            while(resultSet.next())
            {
               // iterate & read the result set
               System.out.println("name = " + resultSet.getString("name"));
               System.out.println("id = " + resultSet.getInt("id"));
            }
+           DB.close();
           }
+      
 
      catch(SQLException e){  System.err.println(e.getMessage()); }       
-      finally {         
+/*      finally {         
             try {
                   if(connection != null)
                      connection.close();
@@ -52,6 +56,6 @@ import java.sql.Connection;
             catch(SQLException e) {  // Use SQLException class instead.          
                System.err.println(e); 
              }
-      }
+      }*/
   }
  }

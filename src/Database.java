@@ -7,43 +7,53 @@ import java.util.Scanner;
 
 public class Database {
 	private String driver, username, password;
+	private Connection connection;
 	
 	Database(String driver, String username, String password) {
 		Scanner input = new Scanner(System.in);
-		if (driver == null) {
+		if (driver.equals("")) {
 			System.out.println("Enter a driver for the DB connection:");
-			this.driver = input.nextLine();
+			driver = input.nextLine();
 		}
-		if (username == null) {
+		if (username.equals("")) {
 			System.out.println("Enter a username:");
-			this.username = input.nextLine();
+			username = input.nextLine();
 		}
-		if (password == null) {
+		if (password.equals("")) {
 			System.out.println("Enter a password:");
-			this.password = input.nextLine();
+			password = input.nextLine();
 		}
 		input.close();
+		this.driver = driver;
+		this.username = username;
+		this.password = password;
 	}
 	
 	public ResultSet query(String query) {
-		Connection connection = null;
 		ResultSet result = null;
 		try {
 			connection = DriverManager.getConnection(driver);
 			Statement statement = connection.createStatement();
 			statement.setQueryTimeout(30);
 			
-			result = statement.executeQuery(query);
+			if (query.toLowerCase().contains("select"))
+				result = statement.executeQuery(query);
+			else
+				statement.executeUpdate(query);
 		} catch (SQLException ex) {
 			System.err.println(ex.getMessage());
-		} finally {
-			try {
-				if (connection != null);
-					connection.close();
-			} catch(SQLException ex) {
-				System.err.println(ex);
-			}
-		}
+		} 
 		return result;
+	}
+	
+	public void close() {
+		try {
+			if (connection != null) {
+				connection.close();
+				connection = null;
+			}
+		} catch(SQLException ex) {
+			System.err.println(ex);
+		}
 	}
 }
