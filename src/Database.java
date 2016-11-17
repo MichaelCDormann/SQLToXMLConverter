@@ -32,6 +32,7 @@ public class Database {
 	public ResultSet query(String query) {
 		ResultSet result = null;
 		try {
+			//connection = DriverManager.getConnection(driver, username, password);
 			connection = DriverManager.getConnection(driver);
 			Statement statement = connection.createStatement();
 			statement.setQueryTimeout(30);
