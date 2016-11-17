@@ -5,7 +5,6 @@ public class SQLtoXMLConverter {
 	
 	public static void main(String[] args){
 		
-		SQLParser parser = new SQLParser();
 		menu();
 		
 	}
@@ -14,9 +13,10 @@ public class SQLtoXMLConverter {
 		
 		Scanner s = new Scanner(System.in);
 		String selection = "NONE";
+		SQLParser parser = new SQLParser();
 		
-		while(!selection.equals("")
-			&& !selection.equals("3")){
+		while(!selection.equals("3")
+			&& !selection.equals("")){
 		
 			// DBConnection is either passed or executed within
 			System.out.println("\n-----------MAIN MENU------------");
@@ -27,6 +27,25 @@ public class SQLtoXMLConverter {
 			
 			System.out.print("Enter your selection: ");
 			selection = s.nextLine();
+			
+			// if the selection is "1" prompt for query and parse
+			if(selection.equals("1")){
+				System.out.println("Enter your query: ");
+				String query = s.nextLine();
+				
+				parser.parseQuery(query);
+			}
+			
+			if(selection.equals("2")){
+				System.out.println("\n---------EXAMPLES----------");
+				System.out.println("* Definition 1");
+				
+				System.out.println("* Definition 2");
+				
+				System.out.println("* Definition 3");
+				
+				System.out.println("* Definition 4");
+			}
 			
 		}
 		
