@@ -3,6 +3,7 @@ import java.sql.Connection;
    import java.sql.ResultSet;
    import java.sql.SQLException;
    import java.sql.Statement;
+import java.util.ArrayList;
 
    public class Sample
     {
@@ -20,7 +21,6 @@ import java.sql.Connection;
          Statement statement = connection.createStatement();
          statement.setQueryTimeout(30);  // set timeout to 30 sec.
 
-
          statement.executeUpdate("DROP TABLE IF EXISTS person");
          statement.executeUpdate("CREATE TABLE person (id INTEGER, name STRING)");
 
@@ -35,6 +35,21 @@ import java.sql.Connection;
          //statement.executeUpdate("DELETE FROM person WHERE id='1'");
 
            ResultSet resultSet = statement.executeQuery("SELECT * from person");
+           
+			//test attribute list
+			ArrayList<Attribute> testList = new ArrayList<Attribute>();
+   		
+			Attribute temp = new Attribute();
+			temp.name = "id";
+			temp.tableName = "person";
+			
+			Attribute temp2 = new Attribute();
+			temp2.name = "name";
+			temp2.tableName = "person";
+			
+			testList.add(temp);
+			testList.add(temp2);
+	   		
            while(resultSet.next())
            {
               // iterate & read the result set

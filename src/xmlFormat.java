@@ -19,6 +19,7 @@ public static void XML(ResultSet rSet, ArrayList<Attribute> aList)
 	int rowCount = 0;			//used to keep track of row
 	
 	try{
+		
 	
 	while(rSet.next())
 	{
