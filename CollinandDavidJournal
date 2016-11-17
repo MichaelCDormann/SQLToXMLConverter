@@ -1,0 +1,9 @@
+11/17/2016 1:30pm
+Collin- created a XML class, we know we will be handed a ResultSet object and Array list of Attribute objects
+-Will not return anything
+-They will just have to call XML()
+-Copied while loop from example to traverse the ResultSet
+
+
+
+
