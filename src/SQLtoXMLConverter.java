@@ -5,11 +5,13 @@ public class SQLtoXMLConverter {
 	
 	public static void main(String[] args){
 		
-		menu();
+		Database db = new Database("jdbc:sqlite:sample.db", "", "");
+		menu(db);
+		db.close();
 		
 	}
 	
-	private static void menu(){
+	private static void menu(Database db){
 		
 		Scanner s = new Scanner(System.in);
 		String selection = "NONE";
@@ -50,6 +52,8 @@ public class SQLtoXMLConverter {
 		}
 		
 		System.out.println("\n\nTERMINATING");
+		
+		s.close();
 		
 		
 	}
