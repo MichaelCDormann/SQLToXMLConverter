@@ -38,13 +38,15 @@ public class SQLtoXMLConverter {
 			
 			if(selection.equals("2")){
 				System.out.println("\n---------EXAMPLES----------");
-				System.out.println("* Definition 1 - SQL Does not change.");
 				
 				System.out.println("* Definition 2 - SELECT attribute AS newAttrName FROM..");
 				
 				System.out.println("* Definition 3 - SELECT <GroupName, attr1, attr2> FROM..");
 				
-				System.out.println("* Definition 4 - SELECT attr1,<+attr2> FROM..");
+				System.out.println("* Definition 4 - SELECT attr1,<+attr2> FROM..\n");
+				
+				System.out.println("NOTE: These definitions may be nested within one another.\n"
+						+ "EG: SELECT attr1,<+GroupName, attr1 AS newAttr, attr2> FROM..");
 			}
 			
 		}
