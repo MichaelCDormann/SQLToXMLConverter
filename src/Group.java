@@ -3,7 +3,7 @@
 public class Group {
 	
 	String name;		// name of group <THIS-RIGHT-HERE, attr1, attr2>
-						// if this is UNNAMED (empty string) not grouped, just compressed
+						// if this is UNNAMED (null) not grouped, just compressed
 	boolean compFlag;	// is this group compressed?
 	Attribute compTo;	// the attribute information for the group compression
 	
