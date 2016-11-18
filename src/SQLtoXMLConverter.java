@@ -27,7 +27,7 @@ public class SQLtoXMLConverter {
 			System.out.println("2. View example queries.");
 			System.out.println("3. Quit program (or press enter)");
 			
-			System.out.print("Enter your selection: ");
+			System.out.print("Enter your selection:");
 			selection = s.nextLine();
 			
 			// if the selection is "1" prompt for query and parse

@@ -24,6 +24,7 @@ public class Database {
 			password = input.nextLine();
 		}
 		input.close();
+		
 		this.driver = driver;
 		this.username = username;
 		this.password = password;
