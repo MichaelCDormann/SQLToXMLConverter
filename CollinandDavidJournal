@@ -6,5 +6,23 @@ Collin- created a XML class, we know we will be handed a ResultSet object and Ar
 
 Collin 5:45pm
  - adding to the while loop printing tags before printing each attribute as
-- Def 1 Should be done
+
+	I argue that I have put in grouping, alias handling and printing table name and name
+	I have not done any formating yet but made a variable to keep track of spaces.
+	I have not done any compression yet
+	
+--<A_Record>
+			<NAME1 table="Table1" name="AttributeName1">
+			AttributeValue11
+			</NAME1>
+				<TagName>
+					<NAME2  table="Table1" name="AttributeName2">
+					AttributeValue12
+					</NAME2>
+					<ATTRIBUTENAME3 table="Table1"name="AttributeName3">
+					AttributeValue13
+					</ATTRIBUTENAME3>
+				</TagName>
+			</name1>
+	</A_Record>
 
