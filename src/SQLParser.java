@@ -7,8 +7,6 @@ public class SQLParser {
 	// parser constructor
 	SQLParser(){
 		
-		
-		
 	}
 	
 	public void parseQuery(String query){
@@ -16,6 +14,13 @@ public class SQLParser {
 		/* 
 		 * parse query here
 		 */
+		
+	}
+	
+	// initial state
+	public void One(){
+		
+		
 		
 	}
 	
