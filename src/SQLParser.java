@@ -1,4 +1,5 @@
 import java.sql.*;
+import java.util.ArrayList;
 
 public class SQLParser {
 	
@@ -9,21 +10,14 @@ public class SQLParser {
 		
 	}
 	
+	
 	public void parseQuery(String query){
 		
-		/* 
-		 * parse query here
-		 */
+		ArrayList<String> tokenList = new ArrayList<String>();
+		Tokenizer t = new Tokenizer(tokenList);
 		
-	}
-	
-	// initial state
-	public void One(){
+		t.tokenize(query);	// tokenizes query and updates tokenList with tokens
 		
-		
-		
-	}
-	
-	
+	}	
 	
 }
