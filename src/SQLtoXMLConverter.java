@@ -8,12 +8,24 @@ public class SQLtoXMLConverter {
 		Database db = new Database("", "", "");
 		SQLParser parser = new SQLParser(db);
 		
+		// Create strings to keep track of menu results
 		String menuState = "NONE";
+		String query;
+		String[] result = new String[2];
 		
 		// Main loop for the program
 		while(!menuState.equals("3") && !menuState.equals("")) {
-			menuState = menu();
-			parser.parseQuery(menuState);
+			// Print the menu and capture the result
+			result = menu();
+			
+			// Set menuState and query to what we get back from the menu
+			menuState = result[0];
+			query = result[1];
+			
+			// Parse the query
+			if(!query.equals(null))
+				parser.parseQuery(menuState);
+			
 			// Generate XML
 		}
 		
@@ -23,10 +35,11 @@ public class SQLtoXMLConverter {
 		
 	}
 	
-	private static String menu(){
+	private static String[] menu(){
 		
 		Scanner s = new Scanner(System.in);
-		String result, selection;
+		String selection;
+		String[] result = new String[2];
 		
 		// DBConnection is either passed or executed within
 		System.out.println("\n-----------MAIN MENU------------");
@@ -37,14 +50,15 @@ public class SQLtoXMLConverter {
 			
 		System.out.print("Enter your selection:");
 		selection = s.nextLine();
+		result[0] = selection;
 			
 		// if the selection is "1" prompt for query and parse
 		if(selection.equals("1")){
 			System.out.println("Enter your query: ");
-			result = s.nextLine();
+			result[1] = s.nextLine();
 		}
 			
-		else if(selection.equals("2")){
+		if(selection.equals("2")){
 			System.out.println("\n---------EXAMPLES----------");
 				
 			System.out.println("* Definition 2 - SELECT attribute AS newAttrName FROM..");
@@ -55,12 +69,6 @@ public class SQLtoXMLConverter {
 				
 			System.out.println("NOTE: These definitions may be nested within one another.\n"
 						+ "EG: SELECT attr1,<+GroupName, attr1 AS newAttr, attr2> FROM..");
-		
-			result = selection;
-		}
-		
-		else {
-			result = selection;
 		}
 		
 		s.close();
