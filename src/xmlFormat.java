@@ -14,6 +14,32 @@ import java.util.ArrayList;
 
 public class xmlFormat {
 	
+	public static void main(String[] args){
+ArrayList<Attribute> testList = new ArrayList<Attribute>();
+   		
+		Attribute temp = new Attribute();
+		temp.name = "id";
+		temp.tableName = "person";
+			
+		Attribute temp2 = new Attribute();
+		temp2.name = "name";
+		temp2.tableName = "person";
+			
+		testList.add(temp);
+		testList.add(temp2);
+	   		
+		Database parser = new Database("","","");
+	ResultSet adsf=	parser.query("SELECT * FROM person");
+			try{
+		XML(adsf,testList);
+		parser.close();
+	   		}
+	   		catch(NullPointerException e){
+	   			parser.close();
+	   		}
+		
+	}
+	
 	static ResultSet rSet;
 	static ArrayList<Attribute> aList;
 	
@@ -34,10 +60,10 @@ public class xmlFormat {
 		String tempAtname = "";
 		
 		try {
-			System.out.println("?xml version ='1.0'?>");
+			System.out.println("<?xml version ='1.0'?>");
 			System.out.println("<This Query>");
 			
-			rSetLoop: while (rSet.next()) {	// brings it to the next row
+			 while (rSet.next()) {	// brings it to the next row
 				System.out.println("<A Record>");
 				String tabName = aList.get(colCount).tableName;					
 				String alias = aList.get(colCount).alias;
