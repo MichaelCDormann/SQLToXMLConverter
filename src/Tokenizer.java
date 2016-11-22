@@ -19,7 +19,7 @@ public class Tokenizer {
 		
 		// regular expression to match any known token
 		Matcher m = Pattern
-				.compile("(SELECT)|(select)|(AS)|(as)|(FROM)|(from)|(WHERE)|(where)|<|>|,|\\+|[A-Za-z0-9_$#]+(.[A-Za-z0-9_$#]+)?|[A-Za-z0-9]+")
+				.compile("(SELECT)|(select)|(AS)|(as)|(FROM)|(from)|(WHERE)|(where)|<|>|,|\\+|[A-Za-z][A-Za-z0-9_$#]*(.[A-Za-z0-9_$#]+)?|[A-Za-z0-9]+")
 				.matcher(str);
 		
 		// for each match in the string, add to the token list
