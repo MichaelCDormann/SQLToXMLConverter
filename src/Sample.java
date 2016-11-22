@@ -23,9 +23,16 @@ import java.util.ArrayList;
          int ids [] = {1,2,3,4,5};
          String names [] = {"Peter","Pallar","William","Paul","James Bond"};
 
-         for(int i=0;i<ids.length;i++){
-              DB.query("INSERT INTO person values(' "+ids[i]+"', '"+names[i]+"')"); 
-         }
+         //for(int i=0;i<ids.length;i++){
+        	 DB.query("INSERT INTO person (id, name) VALUES ('1', 'Peter')");
+        	 DB.query("INSERT INTO person (id, name) VALUES ('1', 'Joe')");
+        	 DB.query("INSERT INTO person (id, name) VALUES ('1', 'Brian')");
+        	 DB.query("INSERT INTO person (id, name) VALUES ('2', 'James')");
+        	 DB.query("INSERT INTO person (id, name) VALUES ('3', 'Greg')");
+        	 DB.query("INSERT INTO person (id, name) VALUES ('4', 'Paul')");
+        	 DB.query("INSERT INTO person (id, name) VALUES ('4', 'Eric')");
+              //DB.query("INSERT INTO person values(' "+ids[i]+"', '"+names[i]+"')"); 
+         //}
            
 		//test attribute list
 		ArrayList<Attribute> testList = new ArrayList<Attribute>();
