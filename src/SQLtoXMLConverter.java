@@ -44,7 +44,7 @@ public class SQLtoXMLConverter {
 		// DBConnection is either passed or executed within
 		System.out.println("\n-----------MAIN MENU------------");
 			
-		System.out.println("1. Input Query to for execution.");
+		System.out.println("1. Input Query for execution.");
 		System.out.println("2. View example queries.");
 		System.out.println("3. Quit program (or press enter)");
 			
@@ -71,7 +71,7 @@ public class SQLtoXMLConverter {
 						+ "EG: SELECT attr1,<+GroupName, attr1 AS newAttr, attr2> FROM..");
 		}
 		
-		s.close();
+		//s.close();
 		
 		return result;
 	}
