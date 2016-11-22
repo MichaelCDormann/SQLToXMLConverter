@@ -14,65 +14,110 @@ import java.util.ArrayList;
 
 public class xmlFormat {
 	
+	public static void main(String[] args){
+		ArrayList<Attribute> testList = new ArrayList<Attribute>();
+   		
+		Attribute temp = new Attribute();
+		temp.name = "id";
+		temp.tableName = "person";
+			
+		Attribute temp2 = new Attribute();
+		Group gp = new Group();
+		gp.name = "Tacos";
+		//gp.compTo=temp;
+		temp2.group=gp;
+		temp2.name = "name";
+		temp2.tableName = "person";
+			
+		testList.add(temp);
+		testList.add(temp2);
+	   		
+		Database parser = new Database("jdbc:sqlite:sample.db","","");
+	ResultSet adsf=	parser.query("SELECT * FROM person");
+			
+		XML(adsf,testList);
+		parser.close();
+	   		
+	   
+		
+	}
+	
 	static ResultSet rSet;
 	static ArrayList<Attribute> aList;
 	
 	public static void XML(ResultSet ret, ArrayList<Attribute> lst) {
 		
-		int colCount = 1; 						//used to keep track of what column we are in
+		int colCount = 0; 						//used to keep track of what column we are in
 		int rowCount = 0; 						//used to keep track of row
 		rSet = ret;								//have the result set global
 		aList =lst;								//have the ArrayList set global
 		boolean groupFlag = false;				//used to keep track of grouping
 		boolean compressionFlag = false;		//used to keep track of compression
+		boolean inCompFlag = false;
 		int length = aList.size();				//used to track the length of the ArrayList
 		int numOfSpace=0;						//used to format whitespace while printing
 		int groupCount = 0;
 		String[] gNames = new String[5];
+		String tempGroup = "";
+		String tempAtname = "";
 		
 		try {
-			System.out.println("?xml version ='1.0'?>");
+			System.out.println("<?xml version ='1.0'?>");
 			System.out.println("<This Query>");
 			
-			while (rSet.next()) {	// brings it to the next row
+			 while (rSet.next()) {	// brings it to the next row
 				System.out.println("<A Record>");
 				String tabName = aList.get(colCount).tableName;					
 				String alias = aList.get(colCount).alias;
 				String gName ="";
 				
-				while (colCount < length) {
+				colLoop: while (colCount < length) {
 					tabName = aList.get(colCount).tableName;			//grabs the current attributes table
 					alias = aList.get(colCount).alias;					//grabs the current attributes alias
 					
+					if (aList.get(colCount).compFlag == true)
+					{
+						tempGroup = rSet.getString(colCount - 1);
+						compressionFlag = true;
+						tempAtname = aList.get(colCount-1).name;
+					}
+					else if (compressionFlag == true  && (tempAtname.equals(aList.get(colCount).name)&& (tempGroup.equals(rSet.getString(colCount)))))
+					{
+						colCount++;
+						continue colLoop;
+					}
+					
 					if(aList.get(colCount).group != null && groupFlag == false)		//if attribute has a group 
 					{
+						groupCount++;
 						groupFlag = true;												
 						gName =aList.get(colCount).group.name;								//grab attributes group name and print
 						gNames[groupCount] = gName;											//saves the name so we can close out later
 						System.out.println("< " + gName + " >");							
-						groupCount++;
+					
 					}
 					else if(groupFlag == true && (aList.get(colCount).group.name != gName))		//entering nested groups
 					{	
+						groupCount++;
 						groupFlag = true;												
 						gName =aList.get(colCount).group.name;								//grab attributes group name and print
 						gNames[groupCount] = gName;											//saves the name so we can close out later
 						System.out.println("	< " + gName + " > ----");							
-						groupCount++;
+						
 					}
 								
 					String colName = aList.get(colCount).name;								//get the official attribute name
 					
-					if(alias.equals(""))
+					if(alias==null)
 					{
 						alias = colName;				//if alias doesn't exist put the official name there to print
 					}
 					
 					//	String.format("%" + numOfSpace + "s", "Hello");
 					
-					System.out.println("<" + alias + "  Table="+ tabName + "  name=" + colName +">");
-					rSet.getObject(colName);
-					System.out.println("</" + colName + ">");
+					System.out.println("<" + alias + "  Table= \""+ tabName + "\"  name=\"" + colName +"\">");
+					System.out.println(rSet.getString(colName));
+					System.out.println("</" + alias + ">");
 					colCount++;
 				}
 				
@@ -89,8 +134,8 @@ public class xmlFormat {
 					groupFlag=false;
 				}
 						
-				System.out.println("</A Record>");
-				colCount = 1;
+				System.out.println("</A Record> \n");
+				colCount = 0;
 				rowCount++;
 			}																	//ends the while loop
 			
