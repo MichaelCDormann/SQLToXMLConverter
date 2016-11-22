@@ -18,8 +18,9 @@ public class Tokenizer {
 	public ArrayList<String> tokenize(String str){
 		
 		// regular expression to match any known token
+		str = str.toLowerCase();
 		Matcher m = Pattern
-				.compile("(SELECT)|(select)|(AS)|(as)|(FROM)|(from)|(WHERE)|(where)|<|>|,|\\+|[A-Za-z0-9_$#]+(.[A-Za-z0-9_$#]+)?|[A-Za-z0-9]+")
+				.compile("(select)|(as)|(from)|(where)|<|>|,|\\+|[A-Za-z][A-Za-z0-9_$#]*(.[A-Za-z0-9_$#]+)?|[A-Za-z0-9]+")
 				.matcher(str);
 		
 		// for each match in the string, add to the token list

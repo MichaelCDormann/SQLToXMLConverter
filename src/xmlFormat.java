@@ -55,7 +55,7 @@ public class xmlFormat {
 		boolean compressionFlag = false;		//used to keep track of compression
 		boolean inCompFlag = false;
 		int length = aList.size();				//used to track the length of the ArrayList
-		int numOfSpace=0;						//used to format whitespace while printing
+		int numOfSpace=1;						//used to format whitespace while printing
 		int groupCount = 0;
 		String[] gNames = new String[5];
 		String tempGroup = "";
@@ -64,9 +64,11 @@ public class xmlFormat {
 		try {
 			System.out.println("<?xml version ='1.0'?>");
 			System.out.println("<This Query>");
-			
+		
 			 while (rSet.next()) {	// brings it to the next row
+				
 				System.out.println("<A Record>");
+				
 				String tabName = aList.get(colCount).tableName;					
 				String alias = aList.get(colCount).alias;
 				String gName ="";
@@ -93,6 +95,8 @@ public class xmlFormat {
 						groupFlag = true;												
 						gName =aList.get(colCount).group.name;								//grab attributes group name and print
 						gNames[groupCount] = gName;											//saves the name so we can close out later
+					
+						System.out.print(String.format("%" + numOfSpace+ "s", " "));
 						System.out.println("< " + gName + " >");							
 					
 					}
@@ -102,6 +106,7 @@ public class xmlFormat {
 						groupFlag = true;												
 						gName =aList.get(colCount).group.name;								//grab attributes group name and print
 						gNames[groupCount] = gName;											//saves the name so we can close out later
+						System.out.print(String.format("%" + numOfSpace+ "s", "  "));
 						System.out.println("	< " + gName + " > ----");							
 						
 					}
@@ -114,10 +119,13 @@ public class xmlFormat {
 					}
 					
 					//	String.format("%" + numOfSpace + "s", "Hello");
-					
+					System.out.print(String.format("%" + numOfSpace+ "s", "  "));
 					System.out.println("<" + alias + "  Table= \""+ tabName + "\"  name=\"" + colName +"\">");
+					System.out.print(String.format("%" + numOfSpace+ "s", "  "));
 					System.out.println(rSet.getString(colName));
+					System.out.print(String.format("%" + numOfSpace+ "s", "  "));
 					System.out.println("</" + alias + ">");
+					
 					colCount++;
 				}
 				
@@ -126,7 +134,9 @@ public class xmlFormat {
 					while(groupCount > 0)
 					{
 						gName = gNames[groupCount];		
-						System.out.println(" </ " + gName + " >");
+						
+						System.out.print(String.format("%" + numOfSpace+ "s", "  "));
+						System.out.println("</ " + gName + " >");
 						//need to format to decrease whitespace with each close
 						groupCount--;
 					}
