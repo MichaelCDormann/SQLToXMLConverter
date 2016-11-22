@@ -25,24 +25,39 @@ public class xmlFormat {
 		aList =lst;								//have the ArrayList set global
 		boolean groupFlag = false;				//used to keep track of grouping
 		boolean compressionFlag = false;		//used to keep track of compression
+		boolean inCompFlag = false;
 		int length = aList.size();				//used to track the length of the ArrayList
 		int numOfSpace=0;						//used to format whitespace while printing
 		int groupCount = 0;
 		String[] gNames = new String[5];
+		String tempGroup = "";
+		String tempAtname = "";
 		
 		try {
 			System.out.println("?xml version ='1.0'?>");
 			System.out.println("<This Query>");
 			
-			while (rSet.next()) {	// brings it to the next row
+			rSetLoop: while (rSet.next()) {	// brings it to the next row
 				System.out.println("<A Record>");
 				String tabName = aList.get(colCount).tableName;					
 				String alias = aList.get(colCount).alias;
 				String gName ="";
 				
-				while (colCount < length) {
+				colLoop: while (colCount < length) {
 					tabName = aList.get(colCount).tableName;			//grabs the current attributes table
 					alias = aList.get(colCount).alias;					//grabs the current attributes alias
+					
+					if (aList.get(colCount).compFlag == true)
+					{
+						tempGroup = rSet.getString(colCount - 1);
+						compressionFlag = true;
+						tempAtname = aList.get(colCount-1).name;
+					}
+					else if (compressionFlag == true  && (tempAtname.equals(aList.get(colCount).name)&& (tempGroup.equals(rSet.getString(colCount)))))
+					{
+						colCount++;
+						continue colLoop;
+					}
 					
 					if(aList.get(colCount).group != null && groupFlag == false)		//if attribute has a group 
 					{
@@ -71,7 +86,7 @@ public class xmlFormat {
 					//	String.format("%" + numOfSpace + "s", "Hello");
 					
 					System.out.println("<" + alias + "  Table="+ tabName + "  name=" + colName +">");
-					rSet.getObject(colName);
+					System.out.println(rSet.getString(colName));
 					System.out.println("</" + colName + ">");
 					colCount++;
 				}
