@@ -15,28 +15,30 @@ import java.util.ArrayList;
 public class xmlFormat {
 	
 	public static void main(String[] args){
-ArrayList<Attribute> testList = new ArrayList<Attribute>();
+		ArrayList<Attribute> testList = new ArrayList<Attribute>();
    		
 		Attribute temp = new Attribute();
 		temp.name = "id";
 		temp.tableName = "person";
 			
 		Attribute temp2 = new Attribute();
+		Group gp = new Group();
+		gp.name = "Tacos";
+		//gp.compTo=temp;
+		temp2.group=gp;
 		temp2.name = "name";
 		temp2.tableName = "person";
 			
 		testList.add(temp);
 		testList.add(temp2);
 	   		
-		Database parser = new Database("","","");
+		Database parser = new Database("jdbc:sqlite:sample.db","","");
 	ResultSet adsf=	parser.query("SELECT * FROM person");
-			try{
+			
 		XML(adsf,testList);
 		parser.close();
-	   		}
-	   		catch(NullPointerException e){
-	   			parser.close();
-	   		}
+	   		
+	   
 		
 	}
 	
@@ -45,7 +47,7 @@ ArrayList<Attribute> testList = new ArrayList<Attribute>();
 	
 	public static void XML(ResultSet ret, ArrayList<Attribute> lst) {
 		
-		int colCount = 1; 						//used to keep track of what column we are in
+		int colCount = 0; 						//used to keep track of what column we are in
 		int rowCount = 0; 						//used to keep track of row
 		rSet = ret;								//have the result set global
 		aList =lst;								//have the ArrayList set global
@@ -87,33 +89,35 @@ ArrayList<Attribute> testList = new ArrayList<Attribute>();
 					
 					if(aList.get(colCount).group != null && groupFlag == false)		//if attribute has a group 
 					{
+						groupCount++;
 						groupFlag = true;												
 						gName =aList.get(colCount).group.name;								//grab attributes group name and print
 						gNames[groupCount] = gName;											//saves the name so we can close out later
 						System.out.println("< " + gName + " >");							
-						groupCount++;
+					
 					}
 					else if(groupFlag == true && (aList.get(colCount).group.name != gName))		//entering nested groups
 					{	
+						groupCount++;
 						groupFlag = true;												
 						gName =aList.get(colCount).group.name;								//grab attributes group name and print
 						gNames[groupCount] = gName;											//saves the name so we can close out later
 						System.out.println("	< " + gName + " > ----");							
-						groupCount++;
+						
 					}
 								
 					String colName = aList.get(colCount).name;								//get the official attribute name
 					
-					if(alias.equals(""))
+					if(alias==null)
 					{
 						alias = colName;				//if alias doesn't exist put the official name there to print
 					}
 					
 					//	String.format("%" + numOfSpace + "s", "Hello");
 					
-					System.out.println("<" + alias + "  Table="+ tabName + "  name=" + colName +">");
+					System.out.println("<" + alias + "  Table= \""+ tabName + "\"  name=\"" + colName +"\">");
 					System.out.println(rSet.getString(colName));
-					System.out.println("</" + colName + ">");
+					System.out.println("</" + alias + ">");
 					colCount++;
 				}
 				
@@ -130,8 +134,8 @@ ArrayList<Attribute> testList = new ArrayList<Attribute>();
 					groupFlag=false;
 				}
 						
-				System.out.println("</A Record>");
-				colCount = 1;
+				System.out.println("</A Record> \n");
+				colCount = 0;
 				rowCount++;
 			}																	//ends the while loop
 			
