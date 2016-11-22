@@ -6,10 +6,10 @@ import java.sql.Statement;
 import java.util.Scanner;
 
 public class Database {
-	private String driver, username, password;
 	private Connection connection;
 	
 	Database(String driver, String username, String password) {
+		// If the driver, username, and password haven't been provided ask the user for them
 		Scanner input = new Scanner(System.in);
 		if (driver.equals("")) {
 			System.out.println("Enter a driver for the DB connection:");
@@ -23,18 +23,22 @@ public class Database {
 			System.out.println("Enter a password:");
 			password = input.nextLine();
 		}
+		
 		input.close();
 		
-		this.driver = driver;
-		this.username = username;
-		this.password = password;
+		// Create the connection to the Database
+		try {
+			connection = DriverManager.getConnection(driver, username, password);
+		} catch (SQLException ex) {
+			System.err.println(ex.getMessage());
+			System.exit(0);
+		}
 	}
 	
 	public ResultSet query(String query) {
+		// Execute a query and return the result
 		ResultSet result = null;
 		try {
-			//connection = DriverManager.getConnection(driver, username, password);
-			connection = DriverManager.getConnection(driver);
 			Statement statement = connection.createStatement();
 			statement.setQueryTimeout(30);
 			
@@ -49,6 +53,7 @@ public class Database {
 	}
 	
 	public void close() {
+		// Close the connection to the Database
 		try {
 			if (connection != null) {
 				connection.close();
