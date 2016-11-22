@@ -1,41 +1,40 @@
-
 /*
  * XML Formatter
  * Will be passed a ResultSet object from a selection query
- * Will be passed ArrayList of Attribute object
+ * Will be passed ArrayList of Attribute objects
  * 
- * Will print the correct out put
+ * Will print the correct output to the console
  * 
  */
 
+//import Java libraries
 import java.sql.*;
 import java.io.*;
 import java.util.ArrayList;
 
 public class xmlFormat {
+	
 	static ResultSet rSet;
-	 static ArrayList<Attribute> aList;
+	static ArrayList<Attribute> aList;
+	
 	public static void XML(ResultSet ret, ArrayList<Attribute> lst) {
-		int colCount = 1; // used to keep track of what column we are in
-		int rowCount = 0; // used to keep track of row
-		rSet = ret;								//have the result Set Global
-		aList =lst;
+		
+		int colCount = 1; 						//used to keep track of what column we are in
+		int rowCount = 0; 						//used to keep track of row
+		rSet = ret;								//have the result set global
+		aList =lst;								//have the ArrayList set global
 		boolean groupFlag = false;				//used to keep track of grouping
-		boolean compressionFlag = false;		//used to keep track of Compression
-		int length = aList.size();
-		int numOfSpace=0;							//used to format whitespace while printing
+		boolean compressionFlag = false;		//used to keep track of compression
+		int length = aList.size();				//used to track the length of the ArrayList
+		int numOfSpace=0;						//used to format whitespace while printing
 		int groupCount = 0;
 		String[] gNames = new String[5];
 		
-		
-
 		try {
 			System.out.println("?xml version ='1.0'?>");
 			System.out.println("<This Query>");
 			
-			
-			while (rSet.next()) // brings it to the next row
-			{
+			while (rSet.next()) {	// brings it to the next row
 				System.out.println("<A Record>");
 				String tabName = aList.get(colCount).tableName;					
 				String alias = aList.get(colCount).alias;
@@ -44,16 +43,16 @@ public class xmlFormat {
 				while (colCount < length) {
 					tabName = aList.get(colCount).tableName;			//grabs the current attributes table
 					alias = aList.get(colCount).alias;					//grabs the current attributes alias
-					if(aList.get(colCount).group!= null && groupFlag==false)		//if attribute has a group 
+					
+					if(aList.get(colCount).group != null && groupFlag == false)		//if attribute has a group 
 					{
-						
 						groupFlag = true;												
 						gName =aList.get(colCount).group.name;								//grab attributes group name and print
 						gNames[groupCount] = gName;											//saves the name so we can close out later
 						System.out.println("< " + gName + " >");							
 						groupCount++;
 					}
-					else if(groupFlag ==true && (aList.get(colCount).group.name!=gName))		//entering nested groups
+					else if(groupFlag == true && (aList.get(colCount).group.name != gName))		//entering nested groups
 					{	
 						groupFlag = true;												
 						gName =aList.get(colCount).group.name;								//grab attributes group name and print
@@ -61,8 +60,7 @@ public class xmlFormat {
 						System.out.println("	< " + gName + " > ----");							
 						groupCount++;
 					}
-					
-					
+								
 					String colName = aList.get(colCount).name;								//get the official attribute name
 					
 					if(alias.equals(""))
@@ -70,7 +68,7 @@ public class xmlFormat {
 						alias = colName;				//if alias doesn't exist put the official name there to print
 					}
 					
-				//	String.format("%" + numOfSpace + "s", "Hello");
+					//	String.format("%" + numOfSpace + "s", "Hello");
 					
 					System.out.println("<" + alias + "  Table="+ tabName + "  name=" + colName +">");
 					rSet.getObject(colName);
@@ -80,7 +78,7 @@ public class xmlFormat {
 				
 				
 				if(groupFlag==true){						//prints the closing group tabs at the end of all attributes
-					while(groupCount> 0)
+					while(groupCount > 0)
 					{
 						gName = gNames[groupCount];		
 						System.out.println(" </ " + gName + " >");
@@ -90,23 +88,16 @@ public class xmlFormat {
 					
 					groupFlag=false;
 				}
-				
-				
+						
 				System.out.println("</A Record>");
 				colCount = 1;
 				rowCount++;
 			}																	//ends the while loop
-		
-			
 			
 			System.out.println("</This Query>");
 
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
-	}
-
-	
+	}	
 }
