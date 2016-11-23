@@ -32,7 +32,7 @@ public class SQLParser {
 	
 	
 	// update query with new element
-	public void addQuery(String s){
+	public void updateQuery(String s){
 		this.generatedQuery += " " + s + " ";
 	}
 	
@@ -41,7 +41,7 @@ public class SQLParser {
 	
 	
 	// verifies nextToken matches and removes from the list
-	public boolean isNextToken(String s){
+	public boolean nextTokenMatch(String s){
 		
 		if(this.tokenList.get(0).equals(s)){
 			this.tokenList.remove(0);
@@ -58,7 +58,7 @@ public class SQLParser {
 	
 	// verifies if nextToken matches an ID
 	// used for attribute and tables, including attributes with table names preceding
-	public boolean nextIsID(){
+	public boolean isNextID(){
 		
 		if(this.tokenList.get(0).matches("[A-Za-z][A-Za-z0-9_$#]*(.[A-Za-z0-9_$#]+)?")){
 			return true;
@@ -74,7 +74,7 @@ public class SQLParser {
 	
 	// verifies if nextToken matches a group name
 	// used for group name checks within group markers
-	public boolean nextIsGroupName(){
+	public boolean isNextGroupName(){
 		
 		if(this.tokenList.get(0).matches("")){
 			return true;
@@ -114,8 +114,8 @@ public class SQLParser {
 	// initial start state 
 	public void startState(){
 		
-		if(isNextToken("select")){
-			addQuery("select");
+		if(nextTokenMatch("select")){
+			updateQuery("select");
 			//call 2
 			attributeState();
 		}else{
@@ -134,10 +134,10 @@ public class SQLParser {
 	// state 2
 	public void attributeState(){
 		
-		if(isNextToken("*")){
-			addQuery("*");
+		if(nextTokenMatch("*")){
+			updateQuery("*");
 			// call 5
-		}else if(nextIsID()){
+		}else if(isNextID()){
 			// call 3
 		}else{
 			
