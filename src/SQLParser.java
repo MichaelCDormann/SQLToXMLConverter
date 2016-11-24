@@ -184,18 +184,19 @@ public class SQLParser {
 		// ingest from state 2
 		if(isNextID()){
 			
-			String tmpAttrName = getNextVal();	//TODO handle table1.attributeName
+			String tmpAttrName = getNextVal();
 			// remove attribute ID from list
 			getNextToken();
 			
 			// check if next matches AS for alias
-			if(nextTokenMatch("AS")){
+			if(nextTokenMatch("as")){
 				
 				if(isNextID()){
 					
 					String tmpAlias = getNextVal();
-					this.attrList.add( new Attribute(tmpAttrName, "tableNamePLACEHOLDER", tmpAlias) );
+					this.attrList.add( new Attribute(tmpAttrName, "tableNamePLACEHOLDER", tmpAlias) );//TODO handle table1.attributeName
 					getNextToken();
+					updateQuery(tmpAttrName);
 					
 				}else{
 					try {
@@ -230,13 +231,14 @@ public class SQLParser {
 				getNextToken();
 				
 				// check if next matches AS for alias
-				if(nextTokenMatch("AS")){
+				if(nextTokenMatch("as")){
 					
 					if(isNextID()){
 						
 						String tmpAlias = getNextVal();
-						this.attrList.add( new Attribute(tmpAttrName, "tableNamePLACEHOLDER", tmpAlias) );
+						this.attrList.add( new Attribute(tmpAttrName, "tableNamePLACEHOLDER", tmpAlias) );//TODO handle table1.attributeName
 						getNextToken();
+						updateQuery(tmpAttrName);
 						
 					}else{
 						try {
@@ -257,6 +259,8 @@ public class SQLParser {
 			}
 			
 		}	// loop state 3 to state 6 end
+		
+		
 		
 		//TODO implement remainder of state 3
 		// eg, call 4, 15, 8
