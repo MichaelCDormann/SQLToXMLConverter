@@ -7,7 +7,17 @@ public class SQLParser {
 	
 	Connection conn;				// database connection object
 	ArrayList<String> tokenList;	// list of tokens from SQL Query
+	ArrayList<Attribute> attrList;	// list of attributes to be passed to XMLFormat
 	String generatedQuery;			// query that is generated throughout the states
+	
+	
+	// constructor
+	SQLParser(ArrayList<Attribute> passedAttrList){
+		
+		// set local pointer for passed attribute list 
+		this.attrList = passedAttrList;
+		
+	}
 	
 	
 	public void parseQuery(String query){
@@ -84,6 +94,21 @@ public class SQLParser {
 		
 	}
 	
+	// returns the next token value or empty string
+	public String getNextVal(){
+		
+		return (this.tokenList.get(0) == null)? "" : this.tokenList.get(0);
+		
+	}
+	
+	
+	// removes the head of the tokenList
+	public void getNextToken(){
+		
+		this.tokenList.remove(0);
+		
+	}
+	
 	
 	
 	
@@ -92,7 +117,7 @@ public class SQLParser {
 	 * -------------|-----------
 	 * State  1		|    startState
 	 * State  2		|    attributeState
-	 * State  3		| 
+	 * State  3		|    attributeLoop
 	 * State  4		|
 	 * State  5		|
 	 * State  6		|
@@ -123,7 +148,6 @@ public class SQLParser {
 			try {
 				throw new ParseException("SELECT statement not found");
 			} catch (ParseException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			
@@ -139,17 +163,111 @@ public class SQLParser {
 			// call 5
 		}else if(isNextID()){
 			// call 3
+			attributeLoop();
 		}else{
 			
 			try {
 				throw new ParseException("Attributes not specified");
 			} catch (ParseException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			
 		}
 		
+	} // end state 2
+	
+	
+	// state 3
+	public void attributeLoop(){
+		
+		
+		// ingest from state 2
+		if(isNextID()){
+			
+			String tmpAttrName = getNextVal();	//TODO handle table1.attributeName
+			// remove attribute ID from list
+			getNextToken();
+			
+			// check if next matches AS for alias
+			if(nextTokenMatch("AS")){
+				
+				if(isNextID()){
+					
+					String tmpAlias = getNextVal();
+					this.attrList.add( new Attribute(tmpAttrName, "tableNamePLACEHOLDER", tmpAlias) );
+					getNextToken();
+					
+				}else{
+					try {
+						throw new ParseException("Alias for "+tmpAttrName+" expected");
+					} catch (ParseException e) {
+						e.printStackTrace();
+					}
+				}
+					
+			}
+			
+		}else{
+			try {
+				throw new ParseException("Attribute ID expected after \"SELECT\"");
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		
+		
+		// loop state 3 to state 6 begin
+		while(nextTokenMatch(",")){
+			
+			// add comma to generated query
+			updateQuery(",");
+			// ----------- proceed to state 6 ------------
+			if(isNextID()){
+				
+				String tmpAttrName = getNextVal();	//TODO handle table1.attributeName
+				// remove attribute ID from list
+				getNextToken();
+				
+				// check if next matches AS for alias
+				if(nextTokenMatch("AS")){
+					
+					if(isNextID()){
+						
+						String tmpAlias = getNextVal();
+						this.attrList.add( new Attribute(tmpAttrName, "tableNamePLACEHOLDER", tmpAlias) );
+						getNextToken();
+						
+					}else{
+						try {
+							throw new ParseException("Alias for "+tmpAttrName+" expected");
+						} catch (ParseException e) {
+							e.printStackTrace();
+						}
+					}
+						
+				}
+				
+			}else{
+				try {
+					throw new ParseException("Attribute ID expected after \",\"");
+				} catch (ParseException e) {
+					e.printStackTrace();
+				}
+			}
+			
+		}	// loop state 3 to state 6 end
+		
+		//TODO implement remainder of state 3
+		// eg, call 4, 15, 8
+		
 	}
+	
+	
+	
+	
+	
+	
+	
 	
 }

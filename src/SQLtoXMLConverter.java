@@ -1,12 +1,15 @@
+import java.util.ArrayList;
 import java.util.Scanner;
 
 // main class wrapper for entire project
 public class SQLtoXMLConverter {
 	
 	public static void main(String[] args){
+				
 		// Create Database and SQLParser objects to be used in the rest of the program
-		Database db = new Database("", "", "");
-		SQLParser parser = new SQLParser(db);
+		Database db = new Database("jdbc:sqlite:sample.db", " ", " ");
+		ArrayList<Attribute> attrList = new ArrayList<Attribute>();
+		SQLParser parser = new SQLParser(attrList/*, db*/);
 		
 		// Create strings to keep track of menu results
 		String menuState = "NONE";
@@ -23,8 +26,8 @@ public class SQLtoXMLConverter {
 			query = result[1];
 			
 			// Parse the query
-			if(!query.equals(null))
-				parser.parseQuery(menuState);
+			if(query != null)
+				parser.parseQuery(query);
 			
 			// Generate XML
 		}
@@ -36,7 +39,7 @@ public class SQLtoXMLConverter {
 	}
 	
 	private static String[] menu(){
-		
+		@SuppressWarnings("resource")
 		Scanner s = new Scanner(System.in);
 		String selection;
 		String[] result = new String[2];
@@ -48,7 +51,7 @@ public class SQLtoXMLConverter {
 		System.out.println("2. View example queries.");
 		System.out.println("3. Quit program (or press enter)");
 			
-		System.out.print("Enter your selection:");
+		System.out.println("Enter your selection:");
 		selection = s.nextLine();
 		result[0] = selection;
 			
@@ -70,9 +73,7 @@ public class SQLtoXMLConverter {
 			System.out.println("NOTE: These definitions may be nested within one another.\n"
 						+ "EG: SELECT attr1,<+GroupName, attr1 AS newAttr, attr2> FROM..");
 		}
-		
-		//s.close();
-		
+				
 		return result;
 	}
 

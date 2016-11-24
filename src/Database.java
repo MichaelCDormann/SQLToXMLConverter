@@ -10,6 +10,7 @@ public class Database {
 	
 	Database(String driver, String username, String password) {
 		// If the driver, username, and password haven't been provided ask the user for them
+		@SuppressWarnings("resource")
 		Scanner input = new Scanner(System.in);
 		if (driver.equals("")) {
 			System.out.println("Enter a driver for the DB connection:");
@@ -24,7 +25,7 @@ public class Database {
 			password = input.nextLine();
 		}
 		
-		input.close();
+		//input.close(); <-- commented out problematic closing of System's input stream
 		
 		// Create the connection to the Database
 		try {
