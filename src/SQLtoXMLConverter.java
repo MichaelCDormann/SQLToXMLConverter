@@ -18,6 +18,9 @@ public class SQLtoXMLConverter {
 		
 		// Main loop for the program
 		while(!menuState.equals("3") && !menuState.equals("")) {
+			// clear the attribute list
+			attrList.clear();
+			
 			// Print the menu and capture the result
 			result = menu();
 			

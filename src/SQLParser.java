@@ -70,7 +70,7 @@ public class SQLParser {
 	// used for attribute and tables, including attributes with table names preceding
 	public boolean isNextID(){
 		
-		if(this.tokenList.get(0).matches("[A-Za-z][A-Za-z0-9_$#]*(.[A-Za-z0-9_$#]+)?")){
+		if(this.tokenList.get(0).matches("[A-Za-z][A-Za-z0-9_$#]*(?:\\.[A-Za-z0-9_$#]+)?")){
 			return true;
 		}
 		
@@ -86,7 +86,7 @@ public class SQLParser {
 	// used for group name checks within group markers
 	public boolean isNextGroupName(){
 		
-		if(this.tokenList.get(0).matches("")){
+		if(this.tokenList.get(0).matches("[A-Za-z0-9]+")){
 			return true;
 		}
 		
@@ -206,6 +206,10 @@ public class SQLParser {
 					}
 				}
 					
+			}else{
+				// no alias
+				this.attrList.add( new Attribute(tmpAttrName, "tableNamePLACEHOLDER") );//TODO handle table1.attributeName
+				updateQuery(tmpAttrName);
 			}
 			
 		}else{
@@ -248,6 +252,10 @@ public class SQLParser {
 						}
 					}
 						
+				}else{
+					// non alias
+					this.attrList.add( new Attribute(tmpAttrName, "tableNamePLACEHOLDER") );//TODO handle table1.attributeName
+					updateQuery(tmpAttrName);
 				}
 				
 			}else{
