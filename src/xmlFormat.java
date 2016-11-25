@@ -24,7 +24,8 @@ public class xmlFormat {
 		Attribute temp2 = new Attribute();
 		Group gp = new Group();
 		gp.name = "Tacos";
-		//gp.compTo=temp;
+		gp.compTo=temp;
+		temp2.compFlag=true;
 		temp2.group=gp;
 		temp2.name = "name";
 		temp2.tableName = "person";
@@ -33,8 +34,11 @@ public class xmlFormat {
 		testList.add(temp2);
 	   		
 		Database parser = new Database("jdbc:sqlite:sample.db","","");
+		
+
+	         
 	ResultSet adsf=	parser.query("SELECT * FROM person");
-			
+		
 		XML(adsf,testList);
 		parser.close();
 	   		
@@ -60,6 +64,7 @@ public class xmlFormat {
 		String[] gNames = new String[5];
 		String tempGroup = "";
 		String tempAtname = "";
+		String prevAtName = "";
 		
 		try {
 			System.out.println("<?xml version ='1.0'?>");
@@ -67,7 +72,7 @@ public class xmlFormat {
 		
 			 while (rSet.next()) {	// brings it to the next row
 				
-				System.out.println("<A Record>");
+				if(compressionFlag ==false) System.out.println("<A Record>");
 				
 				String tabName = aList.get(colCount).tableName;					
 				String alias = aList.get(colCount).alias;
@@ -77,18 +82,25 @@ public class xmlFormat {
 					tabName = aList.get(colCount).tableName;			//grabs the current attributes table
 					alias = aList.get(colCount).alias;					//grabs the current attributes alias
 					
-					if (aList.get(colCount).compFlag == true)
+					if (aList.get(colCount).compFlag == true )
 					{
-						tempGroup = rSet.getString(colCount - 1);
+						if(compressionFlag ==false)				//need to save previous attributes name
+							tempGroup = prevAtName;
+							
 						compressionFlag = true;
 						tempAtname = aList.get(colCount-1).name;
 					}
-					else if (compressionFlag == true  && (tempAtname.equals(aList.get(colCount).name)&& (tempGroup.equals(rSet.getString(colCount)))))
+					
+					else if (compressionFlag == true  && (tempAtname.equals(aList.get(colCount).name)))
 					{
+						String f = aList.get(colCount).name;
+						String d =rSet.getString(f);
+							if(tempGroup.equals(d)){
 						colCount++;
 						continue colLoop;
+						}
+							compressionFlag=false;
 					}
-					
 					if(aList.get(colCount).group != null && groupFlag == false)		//if attribute has a group 
 					{
 						groupCount++;
@@ -122,7 +134,7 @@ public class xmlFormat {
 					System.out.print(String.format("%" + numOfSpace+ "s", "  "));
 					System.out.println("<" + alias + "  Table= \""+ tabName + "\"  name=\"" + colName +"\">");
 					System.out.print(String.format("%" + numOfSpace+ "s", "  "));
-					System.out.println(rSet.getString(colName));
+					System.out.println(prevAtName = rSet.getString(colName));
 					System.out.print(String.format("%" + numOfSpace+ "s", "  "));
 					System.out.println("</" + alias + ">");
 					
@@ -130,7 +142,8 @@ public class xmlFormat {
 				}
 				
 				
-				if(groupFlag==true){						//prints the closing group tabs at the end of all attributes
+				
+				 if(groupFlag==true){						//prints the closing group tabs at the end of all attributes
 					while(groupCount > 0)
 					{
 						gName = gNames[groupCount];		
@@ -143,8 +156,10 @@ public class xmlFormat {
 					
 					groupFlag=false;
 				}
-						
-				System.out.println("</A Record> \n");
+				else{
+					System.out.println("</A Record> \n");
+				}
+		
 				colCount = 0;
 				rowCount++;
 			}																	//ends the while loop
