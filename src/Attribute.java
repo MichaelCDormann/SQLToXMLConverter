@@ -31,10 +31,10 @@ public class Attribute {
 	// Attribute constructor with table name and alias
 	Attribute(String name, String tableName, String alias){
 		
-		this.name = name;				// initialize Attribute identifying name
-		this.tableName = tableName;		// initialize Attribute table name
-		this.alias = alias;				// initialize alias field for [attribute AS name]
-		compFlag = false;				// initialize compression flag to false
+		this.name = name;					// initialize Attribute identifying name
+		this.tableName = tableName;			// initialize Attribute table name
+		this.alias = alias;					// initialize alias field for [attribute AS name]
+		compFlag = false;					// initialize compression flag to false
 	}
 	
 	// ------------------------------------------------------------
