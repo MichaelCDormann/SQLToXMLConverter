@@ -1,19 +1,20 @@
 /*
- * XML Formatter
- * Will be passed a ResultSet object from a selection query
- * Will be passed ArrayList of Attribute objects
+ * xmlFormat class
  * 
- * Will print the correct output to the console
+ * xmlFormat class formats the SQL data into proper XML output
+ * Class is passed a ResultSet object from a selection query
+ * Class is passed an ArrayList of Attribute objects from the SQLParser class
+ * XML output is displayed to the console
  * 
  */
 
 //import Java libraries
 import java.sql.*;
-import java.io.*;
 import java.util.ArrayList;
 
 public class xmlFormat {
 	
+	//for testing purposes
 	public static void main(String[] args){
 		ArrayList<Attribute> testList = new ArrayList<Attribute>();
    		
@@ -34,140 +35,164 @@ public class xmlFormat {
 		testList.add(temp2);
 	   		
 		Database parser = new Database("jdbc:sqlite:sample.db","","");
-		
-
-	         
-	ResultSet adsf=	parser.query("SELECT * FROM person");
+		ResultSet adsf=	parser.query("SELECT * FROM person");
 		
 		XML(adsf,testList);
 		parser.close();
-	   		
-	   
-		
 	}
 	
-	static ResultSet rSet;
-	static ArrayList<Attribute> aList;
+	static ResultSet rSet;					// make ResultSet global
+	static ArrayList<Attribute> aList;		// make ArrayList global
 	
 	public static void XML(ResultSet ret, ArrayList<Attribute> lst) {
 		
-		int colCount = 0; 						//used to keep track of what column we are in
-		int rowCount = 0; 						//used to keep track of row
-		rSet = ret;								//have the result set global
-		aList =lst;								//have the ArrayList set global
-		boolean groupFlag = false;				//used to keep track of grouping
-		boolean compressionFlag = false;		//used to keep track of compression
-		boolean inCompFlag = false;
-		int length = aList.size();				//used to track the length of the ArrayList
-		int numOfSpace=1;						//used to format whitespace while printing
-		int groupCount = 0;
-		String[] gNames = new String[5];
-		String tempGroup = "";
-		String tempAtname = "";
-		String prevAtName = "";
+		rSet = ret;								// set the ResultSet to the global variable
+		aList =lst;								// set the ArrayList to the global variable
+		int colCount = 0; 						// used to keep track of the current column
+		int groupCount = 0;						// used to keep track of the group scope
+		int length = aList.size();				// used to track the length of the ArrayList
+		int tabCnt = 1;							// used to format tab whitespace for console output
+		int tagCnt = 0;							// used to track the <A Record> tags
+		boolean groupFlag = false;				// used to keep track of grouping
+		boolean compressionFlag = false;		// used to keep track of compression
+		String[] gNames = new String[5];		// used to keep track of the name of the groups
+		String tempGroup = "";					// used to track the name of the current group
+		String tempAtname = "";					// used as a temporary holder for the Attribute object
+		String prevAtName = "";					// used to track the previous Attribute object
 		
-		try {
+		try {		// error handling for SQLException
+			
+			// display XML output to the console
 			System.out.println("<?xml version ='1.0'?>");
 			System.out.println("<This Query>");
-		
-			 while (rSet.next()) {	// brings it to the next row
+			
+			while (rSet.next()) {		// move ResultSet to the next data row
 				
-				if(compressionFlag ==false) System.out.println("<A Record>");
+				if (compressionFlag == false) {		// checks if data is to be compressed
+					
+					System.out.println("<A Record>");	// display XML output to the console
+					
+					tagCnt++;		// increase the counter for the <A Record> tag
+				}
 				
-				String tabName = aList.get(colCount).tableName;					
+				// initialize the variables for the current ResultSet data row
+				String tabName = aList.get(colCount).tableName;
 				String alias = aList.get(colCount).alias;
 				String gName ="";
 				
-				colLoop: while (colCount < length) {
-					tabName = aList.get(colCount).tableName;			//grabs the current attributes table
-					alias = aList.get(colCount).alias;					//grabs the current attributes alias
+				colLoop: while (colCount < length) {		// move the ResultSet to the next data column
 					
-					if (aList.get(colCount).compFlag == true )
-					{
-						if(compressionFlag ==false)				//need to save previous attributes name
+					tabName = aList.get(colCount).tableName;			// grabs the current Attribute's table
+					alias = aList.get(colCount).alias;					// grabs the current Attribute's alias
+					
+					if (aList.get(colCount).compFlag == true) {
+
+						if (compressionFlag == false)				// saves previous Attribute's name
 							tempGroup = prevAtName;
 							
-						compressionFlag = true;
-						tempAtname = aList.get(colCount-1).name;
+						compressionFlag = true;						// flag to track if compression is processing
+						tempAtname = aList.get(colCount-1).name;	// stores the previous column's name
 					}
 					
-					else if (compressionFlag == true  && (tempAtname.equals(aList.get(colCount).name)))
-					{
-						String f = aList.get(colCount).name;
-						String d =rSet.getString(f);
-							if(tempGroup.equals(d)){
-						colCount++;
-						continue colLoop;
-						}
-							compressionFlag=false;
-					}
-					if(aList.get(colCount).group != null && groupFlag == false)		//if attribute has a group 
-					{
-						groupCount++;
-						groupFlag = true;												
-						gName =aList.get(colCount).group.name;								//grab attributes group name and print
-						gNames[groupCount] = gName;											//saves the name so we can close out later
-					
-						System.out.print(String.format("%" + numOfSpace+ "s", " "));
-						System.out.println("< " + gName + " >");							
-					
-					}
-					else if(groupFlag == true && (aList.get(colCount).group.name != gName))		//entering nested groups
-					{	
-						groupCount++;
-						groupFlag = true;												
-						gName =aList.get(colCount).group.name;								//grab attributes group name and print
-						gNames[groupCount] = gName;											//saves the name so we can close out later
-						System.out.print(String.format("%" + numOfSpace+ "s", "  "));
-						System.out.println("	< " + gName + " > ----");							
-						
-					}
-								
-					String colName = aList.get(colCount).name;								//get the official attribute name
-					
-					if(alias==null)
-					{
-						alias = colName;				//if alias doesn't exist put the official name there to print
-					}
-					
-					//	String.format("%" + numOfSpace + "s", "Hello");
-					System.out.print(String.format("%" + numOfSpace+ "s", "  "));
-					System.out.println("<" + alias + "  Table= \""+ tabName + "\"  name=\"" + colName +"\">");
-					System.out.print(String.format("%" + numOfSpace+ "s", "  "));
-					System.out.println(prevAtName = rSet.getString(colName));
-					System.out.print(String.format("%" + numOfSpace+ "s", "  "));
-					System.out.println("</" + alias + ">");
-					
-					colCount++;
-				}
-				
-				
-				
-				 if(groupFlag==true){						//prints the closing group tabs at the end of all attributes
-					while(groupCount > 0)
-					{
-						gName = gNames[groupCount];		
-						
-						System.out.print(String.format("%" + numOfSpace+ "s", "  "));
-						System.out.println("</ " + gName + " >");
-						//need to format to decrease whitespace with each close
-						groupCount--;
-					}
-					
-					groupFlag=false;
-				}
-				else{
-					System.out.println("</A Record> \n");
-				}
-		
-				colCount = 0;
-				rowCount++;
-			}																	//ends the while loop
-			
-			System.out.println("</This Query>");
+					else if (compressionFlag == true  && tempAtname.equals(aList.get(colCount).name)) {
 
-		} catch (SQLException e) {
-			e.printStackTrace();
+						String f = aList.get(colCount).name;		// stores the current Attribute's name
+						String d = rSet.getString(f);				// stores the current ResultSet's name
+						
+						if (tempGroup.equals(d)) {		// checks if the current group equals the previous group
+						
+							colCount++;					// increase the column counter for the inner loop
+							continue colLoop;			// proceed to the next column
+						}
+						
+						compressionFlag = false;		// mark compression flag; compression completed
+					}
+					
+					if (aList.get(colCount).group != null && groupFlag == false) {		// checks Attribute for a group 
+
+						groupCount++;										// increment the group counter
+						groupFlag = true;									// flag to track grouping
+						gName = aList.get(colCount).group.name;				// grabs Attribute's group name
+						gNames[groupCount] = gName;							// saves the group name to an array
+																			// used to close group tags
+
+						// display XML output to the console
+						System.out.print(String.format("%" + (4 * tabCnt) + "s", " "));
+						System.out.println("<" + gName + ">");
+						
+						tabCnt++;		// increment the tab counter for whitespace format
+					}
+					
+					else if (groupFlag == true && aList.get(colCount).group.name != gName) {	// entering nested groups
+						
+						groupCount++;														// increment the group counter
+						groupFlag = true;													// flag to track grouping
+						gName = aList.get(colCount).group.name;								// grabs Attribute's group name
+						gNames[groupCount] = gName;											// saves the group name to an array
+																							// used to close group tags
+						
+						// display XML output to the console
+						System.out.print(String.format("%" + (4 * tabCnt) + "s", " "));
+						System.out.println("<" + gName + ">");
+						
+						tabCnt++;		// increment the tab counter for whitespace format
+					}
+					
+					String colName = aList.get(colCount).name;			// grab the current Attribute's name
+					
+					if (alias == null)				// check the current group for an alias
+						alias = colName;			// set alias to column name if alias does not exist
+					
+					// display XML output to the console
+					System.out.print(String.format("%" + (4 * tabCnt) + "s", " "));
+					System.out.print("<" + alias.toUpperCase() + " table=\""+ tabName + "\" name=\"" + colName +"\">");
+					System.out.print(prevAtName = rSet.getString(colName));
+					System.out.println("</" + alias.toUpperCase() + ">");
+					
+					colCount++;			// increase the column counter for the inner loop
+				}	// end column while loop
+				
+				if (groupFlag == true) {		// checks for grouping
+					
+					while (groupCount > 0) {	// loop through grouping to display group closing tags
+						
+						gName = gNames[groupCount];		// set the current group tag to the tag stored in the array		
+						
+						tabCnt--;		// decrement the tab counter for whitespace format
+						
+						// display XML output to the console
+						System.out.print(String.format("%" + (4 * tabCnt) + "s", " "));
+						System.out.println("</" + gName + ">");
+						
+						groupCount--;		// decrement the group counter
+					}
+					
+					groupFlag = false;		// reset the flag for grouping
+				}
+				
+				else {
+					
+					// display XML output to the console
+					System.out.println("</A Record>");
+					
+					tagCnt--;		// decrement the tag counter
+				}
+				
+				colCount = 0;		// reset the column counter for the next ResultSet data row
+			}	// end row while loop
+			
+			while (tagCnt > 0) {	// checks that all <A Record> tags are closed
+				
+				// display XML output to the console
+				System.out.println("</A Record>");
+				
+				tagCnt--;		// decrement the tag counter
+			}
+			// display XML output to the console
+			System.out.println("</This Query>");
+			
+		} catch (SQLException e) {		// catch SQLException
+			e.printStackTrace();		// display stack trace for thrown exception
 		}
-	}	
+	}
 }
