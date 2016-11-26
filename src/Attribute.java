@@ -17,7 +17,7 @@ public class Attribute {
 	Attribute compTo;	// the attribute information for the single compression
 
 	// empty constructor left for testing purposes
-	Attribute(){
+	Attribute() {
 		
 	}
 	
@@ -29,7 +29,7 @@ public class Attribute {
 	}
 	
 	// Attribute constructor with table name and alias
-	Attribute(String name, String tableName, String alias){
+	Attribute(String name, String tableName, String alias) {
 		
 		this.name = name;					// initialize Attribute identifying name
 		this.tableName = tableName;			// initialize Attribute table name
@@ -37,7 +37,7 @@ public class Attribute {
 		compFlag = false;					// initialize compression flag to false
 	}
 	
-	// ------------------------------------------------------------
+	// --------------------------------------------------------------------------
 	
 	// modifies the Attribute object to be a child of a group
 	public void addGroup(Group group) {
