@@ -216,6 +216,7 @@ public class SQLParser {
 		if(nextTokenMatch(",")) {
 			updateQuery(",");
 			attributeLoop();
+			
 		} else if(isNextID()){ // ingest from state 2
 			
 			String tmpAttrName = getNextVal();
@@ -252,8 +253,12 @@ public class SQLParser {
 			
 		} else if(nextTokenMatch("from")) {
 			updateQuery("from");
+			// call 4
 			fromState();
+			
 		} else if(nextTokenMatch("+")) {
+			// state 15 handled right here
+			
 			String tmpAttrName = getNextVal();
 			// remove attribute ID from list
 			getNextToken();
@@ -288,74 +293,17 @@ public class SQLParser {
 			}
 			
 			attributeLoop();
-		}
-		
-		else{
+			
+		} else if(nextTokenMatch("<")) {
+			// call 8
+			groupLoop();
+			
+		} else{
 			try {
-				throw new ParseException("Attribute ID expected after \"SELECT\"");
+				throw new ParseException("Unexpected token in attribute loop: " + getNextVal());
 			} catch (ParseException e) {
 				e.printStackTrace();
 			}
-		}
-		
-		
-		
-		// loop state 3 to state 6 begin
-		/*while(nextTokenMatch(",")){
-			
-			// add comma to generated query
-			updateQuery(",");
-			// ----------- proceed to state 6 ------------
-			if(isNextID()){
-				
-				String tmpAttrName = getNextVal();
-				// remove attribute ID from list
-				getNextToken();
-				updateQuery(tmpAttrName);
-				
-				// check if next matches AS for alias
-				if(nextTokenMatch("as")){
-					updateQuery("as");
-					
-					if(isNextID()){
-						
-						String tmpAlias = getNextVal();
-						this.attrList.add( new Attribute(tmpAttrName, attributes.get(tmpAttrName), tmpAlias) );//TODO handle table1.attributeName
-						getNextToken();
-						updateQuery(tmpAlias);
-						
-					}else{
-						try {
-							throw new ParseException("Alias for "+tmpAttrName+" expected");
-						} catch (ParseException e) {
-							e.printStackTrace();
-						}
-					}
-						
-				}else{
-					// non alias
-					this.attrList.add( new Attribute(tmpAttrName, attributes.get(tmpAttrName)) );//TODO handle table1.attributeName
-					updateQuery(tmpAttrName);
-				}
-				
-			}else{
-				try {
-					throw new ParseException("Attribute ID expected after \",\"");
-				} catch (ParseException e) {
-					e.printStackTrace();
-				}
-			}
-			
-		}*/	// loop state 3 to state 6 end
-		
-		
-		
-		//TODO implement remainder of state 3
-		// eg, call 4, 15, 8
-		
-		if(nextTokenMatch("from")) {
-			// call 4
-			fromState();
 		}
 		
 	}
