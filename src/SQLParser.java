@@ -213,8 +213,10 @@ public class SQLParser {
 	// state 3
 	public void attributeLoop(){
 		
-		// ingest from state 2
-		if(isNextID()){
+		if(nextTokenMatch(",")) {
+			updateQuery(",");
+			attributeLoop();
+		} else if(isNextID()){ // ingest from state 2
 			
 			String tmpAttrName = getNextVal();
 			// remove attribute ID from list
@@ -228,7 +230,7 @@ public class SQLParser {
 				if(isNextID()){
 					
 					String tmpAlias = getNextVal();
-					this.attrList.add( new Attribute(tmpAttrName, attributes.get(tmpAttrName), tmpAlias) );
+					this.attrList.add(  new Attribute(tmpAttrName, attributes.get(tmpAttrName), tmpAlias)  );
 					getNextToken();
 					updateQuery(tmpAlias);
 					
@@ -242,11 +244,53 @@ public class SQLParser {
 					
 			}else{
 				// no alias
-				this.attrList.add( new Attribute(tmpAttrName, attributes.get(tmpAttrName)) );
+				this.attrList.add(  new Attribute(tmpAttrName, attributes.get(tmpAttrName))  );
 				updateQuery(tmpAttrName);
 			}
 			
-		}else{
+			attributeLoop();
+			
+		} else if(nextTokenMatch("from")) {
+			updateQuery("from");
+			fromState();
+		} else if(nextTokenMatch("+")) {
+			String tmpAttrName = getNextVal();
+			// remove attribute ID from list
+			getNextToken();
+			updateQuery(tmpAttrName);
+			
+			// check if next matches AS for alias
+			if(nextTokenMatch("as")){
+				updateQuery("as");
+				
+				if(isNextID()){
+					
+					String tmpAlias = getNextVal();
+					Attribute tmpAttr = new Attribute(tmpAttrName, attributes.get(tmpAttrName), tmpAlias);
+					tmpAttr.addCompression(this.attrList.get(this.attrList.size()-1));
+					this.attrList.add(tmpAttr);
+					getNextToken();
+					updateQuery(tmpAlias);
+					
+				}else{
+					try {
+						throw new ParseException("Alias for "+tmpAttrName+" expected");
+					} catch (ParseException e) {
+						e.printStackTrace();
+					}
+				}
+					
+			}else{
+				// no alias
+				Attribute tmpAttr = new Attribute(tmpAttrName, attributes.get(tmpAttrName));
+				tmpAttr.addCompression(this.attrList.get(this.attrList.size()-1));
+				this.attrList.add(tmpAttr);
+			}
+			
+			attributeLoop();
+		}
+		
+		else{
 			try {
 				throw new ParseException("Attribute ID expected after \"SELECT\"");
 			} catch (ParseException e) {
@@ -257,7 +301,7 @@ public class SQLParser {
 		
 		
 		// loop state 3 to state 6 begin
-		while(nextTokenMatch(",")){
+		/*while(nextTokenMatch(",")){
 			
 			// add comma to generated query
 			updateQuery(",");
@@ -302,12 +346,17 @@ public class SQLParser {
 				}
 			}
 			
-		}	// loop state 3 to state 6 end
+		}*/	// loop state 3 to state 6 end
 		
 		
 		
 		//TODO implement remainder of state 3
 		// eg, call 4, 15, 8
+		
+		if(nextTokenMatch("from")) {
+			// call 4
+			fromState();
+		}
 		
 	}
 	
