@@ -322,6 +322,7 @@ public class SQLParser {
 		
 	}
 	
+	// state 4
 	public void fromLoop() {
 		// do we care about the rest from here?
 		// if not:
@@ -332,11 +333,141 @@ public class SQLParser {
 		this.generatedQuery += remaining;
 	}
 	
+	// state 8
 	public void groupLoop() {
+		Group currGroup = new Group("null");
+		this.groupStack.push( currGroup );
+		
+		if(nextTokenMatch("+")) {
+			// state 10 handled right here
+			currGroup.addCompression(this.attrList.get(this.attrList.size() - 1));
+			if(isNextGroupName() && !attributes.containsKey(getNextVal())) {
+				// state 9 handed right here
+				// if the next token is a group name and it isn't an existing attribute
+				currGroup.changeName(getNextVal());
+				getNextToken();
+				if(nextTokenMatch(",")) {
+					// call 11
+					groupPreAttributeState();
+				} else {
+					try {
+						throw new ParseException("Expected ',' after group name");
+					} catch (ParseException e) {
+						e.printStackTrace();
+					}
+				}
+			} else if(isNextID())
+				// call 12
+				groupAttributeLoop();
+		} else if(isNextGroupName() && !attributes.containsKey(getNextVal())) {
+			// state 9 handled right here
+			// if the next token is a group name and it isn't an existing attribute
+			currGroup.changeName(getNextVal());
+			getNextToken();
+			if(nextTokenMatch(",")) {
+				//call 11
+				groupPreAttributeState();
+			}
+		} else {
+			try {
+				throw new ParseException("Expected '+' or group name, got '" + getNextVal() + "'");
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	// state 11
+	public void groupPreAttributeState() {
+		if(nextTokenMatch("<"))
+			// call 8
+			groupLoop();
+		else if(isNextID())
+			// call 12
+			groupAttributeLoop();
+		else {
+			try {
+				throw new ParseException("Expected '<' or ID, got '" + getNextVal() + "'");
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	// state 12
+	public void groupAttributeLoop(){
+		
+		if(nextTokenMatch(",")) {
+			updateQuery(",");
+			attributeLoop();
+			
+		} else if(isNextID()){ // ingest from state 2
+			
+			String tmpAttrName = getNextVal();
+			// remove attribute ID from list
+			getNextToken();
+			updateQuery(tmpAttrName);
+			
+			// check if next matches AS for alias
+			if(nextTokenMatch("as")){
+				updateQuery("as");
+				
+				if(isNextID()){
+					
+					String tmpAlias = getNextVal();
+					Attribute tmpAttr = new Attribute(tmpAttrName, attributes.get(tmpAttrName), tmpAlias);
+					tmpAttr.addGroup(this.groupStack.peek());
+					this.attrList.add(tmpAttr);
+					getNextToken();
+					updateQuery(tmpAlias);
+					
+				}else{
+					try {
+						throw new ParseException("Alias for "+tmpAttrName+" expected");
+					} catch (ParseException e) {
+						e.printStackTrace();
+					}
+				}
+					
+			}else{
+				// no alias					
+				Attribute tmpAttr = new Attribute(tmpAttrName, attributes.get(tmpAttrName));
+				tmpAttr.addGroup(this.groupStack.peek());
+				this.attrList.add(tmpAttr);
+				updateQuery(tmpAttrName);
+			}
+			
+			groupAttributeLoop();
+			
+		} else if(nextTokenMatch("<")) {
+			// call 8
+			groupLoop();
+			
+		} else if(nextTokenMatch(">")) {
+			// call 14	
+			exitGroup();
+			
+		} else{
+			try {
+				throw new ParseException("Unexpected token in attribute loop: " + getNextVal());
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+		}
 		
 	}
 	
-	
-	
+	// state 14
+	public void exitGroup() {
+		this.groupStack.pop();
+		
+		if(!this.groupStack.isEmpty()) {
+			// call 12
+			groupAttributeLoop();
+		} else {
+			// call 3
+			attributeLoop();
+		}
+	}
 	
 }

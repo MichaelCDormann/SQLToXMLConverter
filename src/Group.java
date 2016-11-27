@@ -14,4 +14,17 @@ public class Group {
 						// if this is UNNAMED (null) not grouped, just compressed
 	boolean compFlag;	// flags the group as compressed
 	Attribute compTo;	// the attribute information for the group compression
+	
+	Group(String name) {
+		this.name = name;
+	}
+	
+	public void addCompression(Attribute compTo) {
+		this.compTo = compTo;
+		this.compFlag = true;
+	}
+	
+	public void changeName(String name) {
+		this.name = name;
+	}
 }
