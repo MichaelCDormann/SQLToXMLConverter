@@ -1,32 +1,65 @@
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.Stack;
 import java.util.regex.Pattern;
 
 public class SQLParser {
 	
-	Connection conn;				// database connection object
-	ArrayList<String> tokenList;	// list of tokens from SQL Query
-	ArrayList<Attribute> attrList;	// list of attributes to be passed to XMLFormat
-	String generatedQuery;			// query that is generated throughout the states
+	Database db;							// database connection object
+	ArrayList<String> tokenList;			// list of tokens from SQL Query
+	ArrayList<Attribute> attrList;			// list of attributes to be passed to XMLFormat
+	Stack<Group> groupStack;				// list of groups that the attributes belong to
+	String generatedQuery;					// query that is generated throughout the states
+	Hashtable<String, String> attributes;	// attribute names stored with table names
 	
 	
 	// constructor
-	SQLParser(ArrayList<Attribute> passedAttrList){
+	SQLParser(Database db){
 		
-		// set local pointer for passed attribute list 
-		this.attrList = passedAttrList;
+		// set local pointer for passed Database object list 
+		this.db = db;
+		
+	}
+	
+	private void createMetaData() throws SQLException {
+		this.attributes = new Hashtable<String, String>();
+		
+		ArrayList<String> tableNames  = new ArrayList<String>();
+		ResultSet result;
+		
+		// create a list of tables from the catalog
+		result = this.db.query("Select * From cat");
+		while(result.next()) {
+			tableNames.add(result.getString(1));
+		}
+		
+		// for each table query the database for the attributes, then store the attributes and tables
+		// as key value pairs... So attributes.get(attribute_name) will return the table it belongs to
+		for(int i = 0; i < tableNames.size(); i++) {
+			result = this.db.query("Select column_name From USER_TAB_COLUMNS Where table_name = '" + tableNames.get(i) + "'");
+			while(result.next()) {
+				this.attributes.put(result.getString(1), tableNames.get(i));
+			}
+		}
 		
 	}
 	
 	
 	public void parseQuery(String query){
+		// create the metadata... basically just the attributes hashtable
+		try{
+			createMetaData();
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+			System.exit(0);
+		}
 		
 		generatedQuery = "";
 		
-		Stack<Group> groupStack = new Stack<Group>();
-		
 		this.tokenList = new ArrayList<String>();
+		this.attrList = new ArrayList<Attribute>();
+		this.groupStack = new Stack<Group>();
 		Tokenizer t = new Tokenizer(this.tokenList);
 		
 		t.tokenize(query);	// tokenizes query and updates tokenList with tokens
@@ -180,23 +213,24 @@ public class SQLParser {
 	// state 3
 	public void attributeLoop(){
 		
-		
 		// ingest from state 2
 		if(isNextID()){
 			
 			String tmpAttrName = getNextVal();
 			// remove attribute ID from list
 			getNextToken();
+			updateQuery(tmpAttrName);
 			
 			// check if next matches AS for alias
 			if(nextTokenMatch("as")){
+				updateQuery("as");
 				
 				if(isNextID()){
 					
 					String tmpAlias = getNextVal();
-					this.attrList.add( new Attribute(tmpAttrName, "tableNamePLACEHOLDER", tmpAlias) );//TODO handle table1.attributeName
+					this.attrList.add( new Attribute(tmpAttrName, attributes.get(tmpAttrName), tmpAlias) );
 					getNextToken();
-					updateQuery(tmpAttrName);
+					updateQuery(tmpAlias);
 					
 				}else{
 					try {
@@ -208,7 +242,7 @@ public class SQLParser {
 					
 			}else{
 				// no alias
-				this.attrList.add( new Attribute(tmpAttrName, "tableNamePLACEHOLDER") );//TODO handle table1.attributeName
+				this.attrList.add( new Attribute(tmpAttrName, attributes.get(tmpAttrName)) );
 				updateQuery(tmpAttrName);
 			}
 			
@@ -230,19 +264,21 @@ public class SQLParser {
 			// ----------- proceed to state 6 ------------
 			if(isNextID()){
 				
-				String tmpAttrName = getNextVal();	//TODO handle table1.attributeName
+				String tmpAttrName = getNextVal();
 				// remove attribute ID from list
 				getNextToken();
+				updateQuery(tmpAttrName);
 				
 				// check if next matches AS for alias
 				if(nextTokenMatch("as")){
+					updateQuery("as");
 					
 					if(isNextID()){
 						
 						String tmpAlias = getNextVal();
-						this.attrList.add( new Attribute(tmpAttrName, "tableNamePLACEHOLDER", tmpAlias) );//TODO handle table1.attributeName
+						this.attrList.add( new Attribute(tmpAttrName, attributes.get(tmpAttrName), tmpAlias) );//TODO handle table1.attributeName
 						getNextToken();
-						updateQuery(tmpAttrName);
+						updateQuery(tmpAlias);
 						
 					}else{
 						try {
@@ -254,7 +290,7 @@ public class SQLParser {
 						
 				}else{
 					// non alias
-					this.attrList.add( new Attribute(tmpAttrName, "tableNamePLACEHOLDER") );//TODO handle table1.attributeName
+					this.attrList.add( new Attribute(tmpAttrName, attributes.get(tmpAttrName)) );//TODO handle table1.attributeName
 					updateQuery(tmpAttrName);
 				}
 				

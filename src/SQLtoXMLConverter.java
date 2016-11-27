@@ -8,8 +8,8 @@ public class SQLtoXMLConverter {
 				
 		// Create Database and SQLParser objects to be used in the rest of the program
 		Database db = new Database("jdbc:sqlite:sample.db", " ", " ");
-		ArrayList<Attribute> attrList = new ArrayList<Attribute>();
-		SQLParser parser = new SQLParser(attrList/*, db*/);
+		ArrayList<String> attrList = new ArrayList<String>(); 
+		SQLParser parser = new SQLParser(db);
 		
 		// Create strings to keep track of menu results
 		String menuState = "NONE";
