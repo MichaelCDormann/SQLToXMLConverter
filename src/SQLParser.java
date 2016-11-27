@@ -231,8 +231,8 @@ public class SQLParser {
 			updateQuery(",");
 			attributeLoop();
 			
-		} else if(isNextID()){ // ingest from state 2
-			
+		} else if(isNextID() && !getNextVal().equals("from")){ // ingest from state 2 
+																			// if next token is an attribute
 			String tmpAttrName = getNextVal();
 			// remove attribute ID from list
 			getNextToken();
@@ -401,7 +401,7 @@ public class SQLParser {
 			updateQuery(",");
 			attributeLoop();
 			
-		} else if(isNextID()){ // ingest from state 2
+		} else if(isNextID()){
 			
 			String tmpAttrName = getNextVal();
 			// remove attribute ID from list
