@@ -155,15 +155,15 @@ public class SQLParser {
 	 * State  3		|    attributeLoop
 	 * State  4		|    fromLoop
 	 * State  5		|    - placed inside of attributeState( state 2 )
-	 * State  6		|
-	 * State  7		|
-	 * State  8		|
-	 * State  9		|
-	 * State 10		|
-	 * State 11		|
-	 * State 12		|
-	 * State 13		|
-	 * State 14		|
+	 * State  6		|    - part of attributeLoop ( state 3 )
+	 * State  7		|    ** not needed?
+	 * State  8		|    groupLoop
+	 * State  9		|    - placed inside of groupLoop ( state 8 )
+	 * State 10		|    - placed inside of groupLoop ( state 8 )
+	 * State 11		|    groupPreAttributeState
+	 * State 12		|    groupAttributeLoop
+	 * State 13		|    - part of groupAttributeLoop ( state 12 )
+	 * State 14		|    exitGroup
 	 * State 15		|    - placed inside of attributeLoop( state 3 )
 	 */
 	
