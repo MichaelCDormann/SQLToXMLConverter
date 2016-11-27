@@ -194,6 +194,18 @@ public class SQLParser {
 		if(nextTokenMatch("*")){
 			updateQuery("*");
 			// call 5
+			if(nextTokenMatch("from")) {
+				// state 5 handled right here
+				updateQuery("from");
+				//call 4
+				fromState();
+			} else {
+				try {
+					throw new ParseException("'From' was expected after '*'");
+				} catch (ParseException e) {
+					e.printStackTrace();
+				}
+			}
 		}else if(isNextID()){
 			// call 3
 			attributeLoop();
