@@ -4,6 +4,8 @@ import java.util.Hashtable;
 import java.util.Stack;
 import java.util.regex.Pattern;
 
+// TODO create some sort of return object that contains generatedQuery and the attrList?
+
 public class SQLParser {
 	
 	Database db;							// database connection object
@@ -151,8 +153,8 @@ public class SQLParser {
 	 * State  1		|    startState
 	 * State  2		|    attributeState
 	 * State  3		|    attributeLoop
-	 * State  4		|
-	 * State  5		|
+	 * State  4		|    fromLoop
+	 * State  5		|    - placed inside of attributeState( state 2 )
 	 * State  6		|
 	 * State  7		|
 	 * State  8		|
@@ -162,7 +164,7 @@ public class SQLParser {
 	 * State 12		|
 	 * State 13		|
 	 * State 14		|
-	 * State 15		|
+	 * State 15		|    - placed inside of attributeLoop( state 3 )
 	 */
 	
 	// within state 3, 7, 12 handle AS keywords
@@ -198,7 +200,7 @@ public class SQLParser {
 				// state 5 handled right here
 				updateQuery("from");
 				//call 4
-				fromState();
+				fromLoop();
 			} else {
 				try {
 					throw new ParseException("'From' was expected after '*'");
@@ -266,7 +268,7 @@ public class SQLParser {
 		} else if(nextTokenMatch("from")) {
 			updateQuery("from");
 			// call 4
-			fromState();
+			fromLoop();
 			
 		} else if(nextTokenMatch("+")) {
 			// state 15 handled right here
@@ -320,9 +322,19 @@ public class SQLParser {
 		
 	}
 	
+	public void fromLoop() {
+		// do we care about the rest from here?
+		// if not:
+		String remaining = "";
+		for(int i = 0; i < this.tokenList.size(); i++) {
+			remaining += (" " + this.tokenList.get(i));
+		}
+		this.generatedQuery += remaining;
+	}
 	
-	
-	
+	public void groupLoop() {
+		
+	}
 	
 	
 	
