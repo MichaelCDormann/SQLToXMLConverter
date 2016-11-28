@@ -15,6 +15,11 @@ public class Group {
 	boolean compFlag;	// flags the group as compressed
 	Attribute compTo;	// the attribute information for the group compression
 	
+	// empty constructor left for testing purposes
+	Group() {
+		
+	}
+	
 	Group(String name) {
 		this.name = name;
 	}
