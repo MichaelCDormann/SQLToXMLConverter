@@ -260,7 +260,6 @@ public class SQLParser {
 			}else{
 				// no alias
 				this.attrList.add(  new Attribute(tmpAttrName, attributes.get(tmpAttrName))  );
-				updateQuery(tmpAttrName);
 			}
 			
 			attributeLoop();
@@ -434,7 +433,6 @@ public class SQLParser {
 				Attribute tmpAttr = new Attribute(tmpAttrName, attributes.get(tmpAttrName));
 				tmpAttr.addGroup(this.groupStack.peek());
 				this.attrList.add(tmpAttr);
-				updateQuery(tmpAttrName);
 			}
 			
 			groupAttributeLoop();
