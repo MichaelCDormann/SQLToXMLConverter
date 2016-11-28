@@ -211,7 +211,9 @@ public class SQLParser {
 		}else if(isNextID()){
 			// call 3
 			attributeLoop();
-		}else{
+		}else if(nextTokenMatch("<"))
+			groupLoop();
+		else{
 			
 			try {
 				throw new ParseException("Attributes not specified");
@@ -398,7 +400,7 @@ public class SQLParser {
 		
 		if(nextTokenMatch(",")) {
 			updateQuery(",");
-			attributeLoop();
+			groupAttributeLoop();
 			
 		} else if(isNextID()){
 			
