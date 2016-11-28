@@ -7,7 +7,7 @@ public class SQLtoXMLConverter {
 	public static void main(String[] args){
 				
 		// Create Database and SQLParser objects to be used in the rest of the program
-		Database db = new Database("jdbc:sqlite:sample.db", " ", " ");
+		Database db = new Database("jdbc:oracle:thin:@olympia.unfcsd.unf.edu:1521:dworcl", "ozzieosprey", "mytastytacos");
 		ArrayList<String> attrList = new ArrayList<String>(); 
 		SQLParser parser = new SQLParser(db);
 		
