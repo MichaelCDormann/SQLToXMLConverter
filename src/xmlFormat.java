@@ -195,4 +195,20 @@ public class xmlFormat {
 			e.printStackTrace();		// display stack trace for thrown exception
 		}
 	}
+	
+	
+	
+	public static void DTD(ResultSet ret, ArrayList<Attribute> lst){		//when this function is called it will print the DTD Information
+		
+		
+	
+	
+	}
+	
+	public static void XSD(ResultSet ret, ArrayList<Attribute> lst){		//when this function is called it will print XSD 
+		
+	
+	
+	}
+	
 }
