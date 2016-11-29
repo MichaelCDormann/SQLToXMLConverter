@@ -26,6 +26,8 @@ public class SQLParser {
 	}
 	
 	private void createMetaData() throws SQLException {
+		if(this.attributes != null)
+			this.attributes.clear();
 		this.attributes = new Hashtable<String, ArrayList<String>>();
 		
 		ArrayList<String> tableNames  = new ArrayList<String>();
