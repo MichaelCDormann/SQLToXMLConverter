@@ -29,7 +29,7 @@ public class SQLParser {
 		this.attributes = new Hashtable<String, ArrayList<String>>();
 		
 		ArrayList<String> tableNames  = new ArrayList<String>();
-		ArrayList<String> attrList = new ArrayList<String>();
+		ArrayList<String> attrList;
 		ResultSet result;
 		
 		// create a list of tables from the catalog
@@ -42,7 +42,7 @@ public class SQLParser {
 		// as key value pairs... So attributes.get(table_name) will return an arraylist of attributes that 
 		// belong to that table
 		for(int i = 0; i < tableNames.size(); i++) {
-			attrList.clear();
+			attrList = new ArrayList<String>();
 			result = this.db.query("Select column_name From USER_TAB_COLUMNS Where table_name = '" + tableNames.get(i) + "'");
 			while(result.next()) {
 				attrList.add(result.getString(1));
