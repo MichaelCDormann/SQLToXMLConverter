@@ -58,6 +58,8 @@ public class SQLParser {
 		
 		String result = "null";
 		
+		// loop through the keys (table names) and search through each list of attributes for a match
+		// return the table name where it matched
 		while(names.hasMoreElements()) {
 			name = names.nextElement();
 			attrs = this.attributes.get(name);
