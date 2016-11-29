@@ -46,13 +46,13 @@ public class xmlFormat {
 			
 		testList.add(temp);
 		testList.add(temp2);
-		testList.add(temp3);
-		testList.add(temp4);
+		//testList.add(temp3);
+		//testList.add(temp4);
 	   		
 		Database parser = new Database("jdbc:sqlite:sample.db","","");
 		
 
-		ResultSet adsf=	parser.query("SELECT * FROM person,Part");
+		ResultSet adsf=	parser.query("SELECT * FROM person");
 		
 		XML(adsf,testList);
 		parser.close();
@@ -222,7 +222,6 @@ public class xmlFormat {
 	
 	
 	
-<<<<<<< HEAD
 	public static void DTD(ResultSet ret, ArrayList<Attribute> lst){		//when this function is called it will print the DTD Information
 		int counter = 0;
 		int STnum = 0;
@@ -233,12 +232,6 @@ public class xmlFormat {
 	System.out.println(" \n \n \n");
 	System.out.println("<?xml version ='1.0'?>");
 	
-	//Print Table Name for each table
-=======
-	public static void DTD(ResultSet ret, ArrayList<Attribute> lst) {		//when this function is called it will print the DTD Information
-		
-		
->>>>>>> 1e806aaf4f12e122bfb142c0ac4d9ba158f654eb
 	
 	while(!flag){
 		asdf =lst.get(counter).tableName;
@@ -259,7 +252,7 @@ public class xmlFormat {
 	System.out.println("<!ELEMENT  " + lst.get(counter++).name + " (#PCDATA)> \n");
 	}
 	
-	System.out.println("]>");
+	System.out.println("]> \n");
 	
 	if(flag == false && ((counter) == length)){
 		flag =true;
@@ -322,5 +315,10 @@ String d = "";
 			System.out.println("</xsd:complexType>");
 			System.out.println("</schema>");
 		}
+	}
+	
+	public static void Parray(ArrayList<Attribute> alist){
+		
+		
 	}
 }
