@@ -88,6 +88,16 @@ public class SQLParser {
 	
 	
 	public ParseResult parseQuery(String query){
+		String tmpQueryEnd = "";
+		if(query.matches(".*where.*|.*WHERE.*|.*Where.*|.*wHERE.*")){
+			
+			tmpQueryEnd = " where " + query.split("where|WHERE|Where|wHERE")[1];
+			query = query.split("where|WHERE|Where|wHERE")[0];
+			
+		}
+		
+		System.out.println(tmpQueryEnd);
+		
 		generatedQuery = "";
 		
 		this.tokenList = new ArrayList<String>();
@@ -117,6 +127,8 @@ public class SQLParser {
 			if(attr.group != null)
 				System.out.println("\t" + attr.group.name + " " + (attr.group.compTo != null? attr.group.compTo.name : "null"));
 		}*/
+		this.generatedQuery += tmpQueryEnd;	// tack on where info if exists
+		System.out.println(this.generatedQuery);
 		ParseResult result = new ParseResult(this.generatedQuery, this.attrList);
 		return result;
 	}
