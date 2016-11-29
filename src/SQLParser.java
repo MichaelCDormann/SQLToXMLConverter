@@ -65,7 +65,7 @@ public class SQLParser {
 		ArrayList<String> attrs;
 		String name;
 		
-		String result = "null";
+		String result = null;
 		
 		// if the attrName is of form tablename.columnname return the tablename
 		if(attrName.matches("[A-Za-z][A-Za-z0-9_$#]+\\.[A-Za-z0-9_$#]+")) {
@@ -405,7 +405,7 @@ public class SQLParser {
 		if(nextTokenMatch("+")) {
 			// state 10 handled right here
 			currGroup.addCompression(this.attrList.get(this.attrList.size() - 1));
-			if(isNextGroupName() && !attributes.containsKey(getNextVal())) {
+			if(isNextGroupName() && getTableName(getNextVal()) == null) {
 				// state 9 handed right here
 				// if the next token is a group name and it isn't an existing attribute
 				currGroup.changeName(getNextVal());
@@ -423,7 +423,7 @@ public class SQLParser {
 			} else if(isNextID())
 				// call 12
 				groupAttributeLoop();
-		} else if(isNextGroupName() && !attributes.containsKey(getNextVal())) {
+		} else if(isNextGroupName() && getTableName(getNextVal()) == null) {
 			// state 9 handled right here
 			// if the next token is a group name and it isn't an existing attribute
 			currGroup.changeName(getNextVal());
