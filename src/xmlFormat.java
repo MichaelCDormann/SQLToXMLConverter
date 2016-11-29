@@ -11,6 +11,7 @@
 //import Java libraries
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class xmlFormat {
 	
@@ -43,6 +44,9 @@ public class xmlFormat {
 	
 	static ResultSet rSet;					// make ResultSet global
 	static ArrayList<Attribute> aList;		// make ArrayList global
+	static ArrayList<String> dList;
+	static ArrayList<String> dtdList;
+	static ArrayList<String> xsdList;
 	
 	public static void XML(ResultSet ret, ArrayList<Attribute> lst) {
 		
@@ -59,18 +63,39 @@ public class xmlFormat {
 		String tempGroup = "";					// used to track the name of the current group
 		String tempAtname = "";					// used as a temporary holder for the Attribute object
 		String prevAtName = "";					// used to track the previous Attribute object
+		Scanner input = new Scanner(System.in);
+		String selection = "";
+		
+		while (selection != "1" || selection != "2" || selection != "3")
+		{
+			System.out.println("\n-----------XML MENU------------");
+			
+			System.out.println("1. Display XML to the console.");
+			System.out.println("2. Save XML to a file.");
+			System.out.println("3. Do both option 1 and option 2.");
+				
+			System.out.println("Enter your selection:");
+			selection = input.nextLine();
 
+			if (selection != "1" || selection != "2" || selection != "3")
+			{
+				System.out.println("Invalid selection.  Try again.");
+			}
+		}
+		
 		try {		// error handling for SQLException
 			
+			dList.add("<?xml version ='1.0'?>");
 			// display XML output to the console
-			System.out.println("<?xml version ='1.0'?>");
-			System.out.println("<This Query>");
+			//System.out.println("<?xml version ='1.0'?>");
+			//System.out.println("<This Query>");
 			
 			while (rSet.next()) {		// move ResultSet to the next data row
 				
 				if (compressionFlag == false) {		// checks if data is to be compressed
 					
-					System.out.println("<A Record>");	// display XML output to the console
+					dList.add("<A Record>");
+					//System.out.println("<A Record>");	// display XML output to the console
 					
 					tagCnt++;		// increase the counter for the <A Record> tag
 				}
@@ -116,9 +141,10 @@ public class xmlFormat {
 						gNames[groupCount] = gName;							// saves the group name to an array
 																			// used to close group tags
 
+						dList.add(String.format("%" + (4 * tabCnt) + "s", " ") + "<" + gName + ">");
 						// display XML output to the console
-						System.out.print(String.format("%" + (4 * tabCnt) + "s", " "));
-						System.out.println("<" + gName + ">");
+						//System.out.print(String.format("%" + (4 * tabCnt) + "s", " "));
+						//System.out.println("<" + gName + ">");
 						
 						tabCnt++;		// increment the tab counter for whitespace format
 					}
@@ -131,9 +157,10 @@ public class xmlFormat {
 						gNames[groupCount] = gName;											// saves the group name to an array
 																							// used to close group tags
 						
+						dList.add(String.format("%" + (4 * tabCnt) + "s", " ") + "<" + gName + ">");
 						// display XML output to the console
-						System.out.print(String.format("%" + (4 * tabCnt) + "s", " "));
-						System.out.println("<" + gName + ">");
+						//System.out.print(String.format("%" + (4 * tabCnt) + "s", " "));
+						//System.out.println("<" + gName + ">");
 						
 						tabCnt++;		// increment the tab counter for whitespace format
 					}
@@ -143,11 +170,17 @@ public class xmlFormat {
 					if (alias == null)				// check the current group for an alias
 						alias = colName;			// set alias to column name if alias does not exist
 					
+					prevAtName = rSet.getString(colName);
+							
+					dList.add(String.format("%" + (4 * tabCnt) + "s", " ") + 
+							"<" + alias.toUpperCase() + " table=\""+ tabName + "\" name=\"" + colName +"\">" +
+							prevAtName + "</" + alias.toUpperCase() + ">");
+					
 					// display XML output to the console
-					System.out.print(String.format("%" + (4 * tabCnt) + "s", " "));
-					System.out.print("<" + alias.toUpperCase() + " table=\""+ tabName + "\" name=\"" + colName +"\">");
-					System.out.print(prevAtName = rSet.getString(colName));
-					System.out.println("</" + alias.toUpperCase() + ">");
+					//System.out.print(String.format("%" + (4 * tabCnt) + "s", " "));
+					//System.out.print("<" + alias.toUpperCase() + " table=\""+ tabName + "\" name=\"" + colName +"\">");
+					//System.out.print(prevAtName = rSet.getString(colName));
+					//System.out.println("</" + alias.toUpperCase() + ">");
 					
 					colCount++;			// increase the column counter for the inner loop
 				}	// end column while loop
@@ -160,9 +193,10 @@ public class xmlFormat {
 						
 						tabCnt--;		// decrement the tab counter for whitespace format
 						
+						dList.add(String.format("%" + (4 * tabCnt) + "s", " ") + "</" + gName + ">");
 						// display XML output to the console
-						System.out.print(String.format("%" + (4 * tabCnt) + "s", " "));
-						System.out.println("</" + gName + ">");
+						//System.out.print(String.format("%" + (4 * tabCnt) + "s", " "));
+						//System.out.println("</" + gName + ">");
 						
 						groupCount--;		// decrement the group counter
 					}
@@ -172,8 +206,9 @@ public class xmlFormat {
 				
 				else {
 					
+					dList.add("</A Record>");
 					// display XML output to the console
-					System.out.println("</A Record>");
+					//System.out.println("</A Record>");
 					
 					tagCnt--;		// decrement the tag counter
 				}
@@ -183,31 +218,89 @@ public class xmlFormat {
 			
 			while (tagCnt > 0) {	// checks that all <A Record> tags are closed
 				
+				dList.add("</A Record>");
 				// display XML output to the console
-				System.out.println("</A Record>");
+				//System.out.println("</A Record>");
 				
 				tagCnt--;		// decrement the tag counter
 			}
+			
+			dList.add("</This Query>");
 			// display XML output to the console
-			System.out.println("</This Query>");
+			// System.out.println("</This Query>");
 			
 		} catch (SQLException e) {		// catch SQLException
 			e.printStackTrace();		// display stack trace for thrown exception
 		}
 		
-		XSD(rSet, aList);
+		if (selection.equals("1"))
+		{
+			Parray(dList);
+		}
+		
+		else if (selection.equals("2"))
+		{
+			Sarray(dList);
+		}
+		
+		else
+		{
+			Parray(dList);
+			Sarray(dList);
+		}
+		
+		dtdList = DTD(rSet, aList);
+		xsdList = XSD(rSet, aList);
+		
+		String selXSD = "";
+		
+		while (selXSD != "1" || selXSD != "2" || selXSD != "3")
+		{
+			System.out.println("\n-----------XSD/DTD MENU------------");
+			
+			System.out.println("1. Display XSD and DTD to the console.");
+			System.out.println("2. Save XSD and DTD to seperate files.");
+			System.out.println("3. Do both option 1 and option 2.");
+				
+			System.out.println("Enter your selection:");
+			selXSD = input.nextLine();
+
+			if (selXSD != "1" || selXSD != "2" || selXSD != "3")
+			{
+				System.out.println("Invalid selection.  Try again.");
+			}
+		}
+		
+		if (selXSD.equals("1"))
+		{
+			printDTD(dtdList);
+			printXSD(xsdList);
+		}
+		
+		else if (selXSD.equals("2"))
+		{
+			saveDTD(dtdList);
+			saveXSD(xsdList);
+		}
+		
+		else
+		{
+			printDTD(dtdList);
+			printXSD(xsdList);
+			saveDTD(dtdList);
+			saveXSD(xsdList);
 	}
 	
 	
 	
-	public static void DTD(ResultSet ret, ArrayList<Attribute> lst) {		//when this function is called it will print the DTD Information
+	public static ArrayList DTD(ResultSet ret, ArrayList<Attribute> lst) {		//when this function is called it will print the DTD Information
 		
 		
 	
-	
+		return dtdList;
 	}
 	
-	public static void XSD (ResultSet ret, ArrayList<Attribute> lst) {		//when this function is called it will print XSD 
+	public static ArrayList XSD (ResultSet ret, ArrayList<Attribute> lst) {		//when this function is called it will print XSD 
 		
 		int counter = 0;
 		int tabCnt = 1;
@@ -243,5 +336,7 @@ public class xmlFormat {
 			System.out.println("</xsd:complexType>");
 			System.out.println("</schema>");
 		}
+		
+		return xsdList;
 	}
 }
