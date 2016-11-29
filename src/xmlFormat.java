@@ -15,7 +15,7 @@ import java.util.ArrayList;
 public class xmlFormat {
 	
 	//for testing purposes
-	public static void main(String[] args){
+	public static void main(String[] args) {
 		ArrayList<Attribute> testList = new ArrayList<Attribute>();
    		
 		Attribute temp = new Attribute();
@@ -59,7 +59,7 @@ public class xmlFormat {
 		String tempGroup = "";					// used to track the name of the current group
 		String tempAtname = "";					// used as a temporary holder for the Attribute object
 		String prevAtName = "";					// used to track the previous Attribute object
-		
+
 		try {		// error handling for SQLException
 			
 			// display XML output to the console
@@ -194,21 +194,54 @@ public class xmlFormat {
 		} catch (SQLException e) {		// catch SQLException
 			e.printStackTrace();		// display stack trace for thrown exception
 		}
+		
+		XSD(rSet, aList);
 	}
 	
 	
 	
-	public static void DTD(ResultSet ret, ArrayList<Attribute> lst){		//when this function is called it will print the DTD Information
+	public static void DTD(ResultSet ret, ArrayList<Attribute> lst) {		//when this function is called it will print the DTD Information
 		
 		
 	
 	
 	}
 	
-	public static void XSD(ResultSet ret, ArrayList<Attribute> lst){		//when this function is called it will print XSD 
+	public static void XSD (ResultSet ret, ArrayList<Attribute> lst) {		//when this function is called it will print XSD 
 		
-	
-	
+		int counter = 0;
+		int tabCnt = 1;
+		String tableName = lst.get(counter).tableName;
+		//ResultSetMetaData rsmd = ret.getMetaData();
+		
+		System.out.println("<?xml version=\"1.0\"?>");
+		
+		while (counter < lst.size())
+		{
+			tableName = lst.get(counter).tableName;
+			
+			System.out.println("<schema xmlns:xsd=\"" + tableName + "XSDnew\" elementFormDefault=\"qualified\" " +
+					"attributeFormDefault=\"qualified\">");
+			
+			System.out.print(String.format("%" + (4 * tabCnt) + "s", " "));
+			System.out.println("<xsd:complexType name=\"" + tableName + "\">");
+			tabCnt++;
+			
+			while (counter < lst.size() && tableName.equals((lst.get(counter).tableName)))
+			{
+				System.out.print(String.format("%" + (4 * tabCnt) + "s", " "));
+				System.out.println("<xsd:element name=\"" + lst.get(counter).name + "\" type=\"xsd:" +
+						"string\" maxOccurs=\"1\" minOccurs=\"1\" />");
+						//rsmd.getColumnType(counter) + "\" maxOccurs=\"1\" minOccurs=\"1\" />");
+				
+				counter++;
+			}
+			
+			tabCnt--;
+			
+			System.out.print(String.format("%" + (4 * tabCnt) + "s", " "));
+			System.out.println("</xsd:complexType>");
+			System.out.println("</schema>");
+		}
 	}
-	
 }
