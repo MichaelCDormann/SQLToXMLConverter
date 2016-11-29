@@ -38,6 +38,7 @@ public class SQLParser {
 			tmpTableNames.add(result.getString(1));
 		}
 		
+		// constrain the tableNames list to those only found in the database and in the from portion of the query
 		int fromIndex = this.tokenList.indexOf("from");
 		fromIndex++;
 		for(int i = fromIndex; i < this.tokenList.size(); i++) {
@@ -65,6 +66,11 @@ public class SQLParser {
 		String name;
 		
 		String result = "null";
+		
+		// if the attrName is of form tablename.columnname return the tablename
+		if(attrName.matches("[A-Za-z][A-Za-z0-9_$#]+.[A-Za-z0-9_$#]+")) {
+			return attrName.substring(0, attrName.indexOf(".")).toUpperCase();
+		}
 		
 		// loop through the keys (table names) and search through each list of attributes for a match
 		// return the table name where it matched
