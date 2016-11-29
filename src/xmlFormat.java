@@ -320,6 +320,7 @@ public class xmlFormat {
 			printXSD(xsdList);
 			saveDTD(dtdList);
 			saveXSD(xsdList);
+		}
 	}
 	
 	public static ArrayList DTD(ResultSet ret, ArrayList<Attribute> lst){		//when this function is called it will print the DTD Information
@@ -388,23 +389,21 @@ String d = "";
 		String tableName = lst.get(counter).tableName;
 		//ResultSetMetaData rsmd = ret.getMetaData();
 		
-		System.out.println("<?xml version=\"1.0\"?>");
+		xsdList.add("<?xml version=\"1.0\"?>");
 		
 		while (counter < lst.size())
 		{
 			tableName = lst.get(counter).tableName;
 			
-			System.out.println("<schema xmlns:xsd=\"" + tableName + "XSDnew\" elementFormDefault=\"qualified\" " +
+			xsdList.add("<schema xmlns:xsd=\"" + tableName + "XSDnew\" elementFormDefault=\"qualified\" " +
 					"attributeFormDefault=\"qualified\">");
 			
-			System.out.print(String.format("%" + (4 * tabCnt) + "s", " "));
-			System.out.println("<xsd:complexType name=\"" + tableName + "\">");
+			xsdList.add(String.format("%" + (4 * tabCnt) + "s", " ") + "<xsd:complexType name=\"" + tableName + "\">");
 			tabCnt++;
 			
 			while (counter < lst.size() && tableName.equals((lst.get(counter).tableName)))
 			{
-				System.out.print(String.format("%" + (4 * tabCnt) + "s", " "));
-				System.out.println("<xsd:element name=\"" + lst.get(counter).name + "\" type=\"xsd:" +
+				xsdList.add(String.format("%" + (4 * tabCnt) + "s", " ") + "<xsd:element name=\"" + lst.get(counter).name + "\" type=\"xsd:" +
 						"string\" maxOccurs=\"1\" minOccurs=\"1\" />");
 						//rsmd.getColumnType(counter) + "\" maxOccurs=\"1\" minOccurs=\"1\" />");
 				
@@ -413,9 +412,8 @@ String d = "";
 			
 			tabCnt--;
 			
-			System.out.print(String.format("%" + (4 * tabCnt) + "s", " "));
-			System.out.println("</xsd:complexType>");
-			System.out.println("</schema>");
+			xsdList.add(String.format("%" + (4 * tabCnt) + "s", " ") + "</xsd:complexType>");
+			xsdList.add("</schema>");
 		}
 		
 		return xsdList;
