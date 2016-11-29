@@ -310,7 +310,6 @@ public class SQLParser {
 				if(isNextID()){
 					
 					String tmpAlias = getNextVal();
-					System.out.println(attributes.get(tmpAttrName));
 					this.attrList.add(  new Attribute(tmpAttrName, getTableName(tmpAttrName), tmpAlias)  );
 					getNextToken();
 					
