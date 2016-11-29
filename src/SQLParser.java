@@ -210,6 +210,13 @@ public class SQLParser {
 				updateQuery("from");
 				//call 4
 				fromLoop();
+				
+				//TODO handle build attributeList from tableList info
+				for(int i = 0; i < this.tableList.size(); i++){
+					
+					ArrayList<String> tableAttr = this.attributes.get(this.tableList.get(i));
+					
+				}
 			} else {
 				try {
 					throw new ParseException("'From' was expected after '*'");
@@ -340,6 +347,12 @@ public class SQLParser {
 		String remaining = "";
 		for(int i = 0; i < this.tokenList.size(); i++) {
 			remaining += (" " + this.tokenList.get(i));
+			
+			// if we have a table name add to the list
+			if(this.attributes.containsKey(this.tokenList.get(i))){
+				this.tableList.add(this.tokenList.get(i));
+			}
+			
 		}
 		this.generatedQuery += remaining;
 	}
