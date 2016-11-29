@@ -161,6 +161,7 @@ public class xmlFormat {
 						gNames[groupCount] = gName;							// saves the group name to an array
 																			// used to close group tags
 
+						if(gName != null)
 						dList.add(String.format("%" + (4 * tabCnt) + "s", " ") + "<" + gName + ">");
 						// display XML output to the console
 						//System.out.print(String.format("%" + (4 * tabCnt) + "s", " "));
@@ -169,14 +170,14 @@ public class xmlFormat {
 						tabCnt++;		// increment the tab counter for whitespace format
 					}
 					
-					else if (groupFlag == true && ((aList.get(colCount).group.name==null) || aList.get(colCount).group.name != gName)) {	// entering nested groups
+					else if (groupFlag == true && (aList.get(colCount).group.name != gName)) {	// entering nested groups
 						
 						groupCount++;														// increment the group counter
 						groupFlag = true;													// flag to track grouping
 						gName = aList.get(colCount).group.name;								// grabs Attribute's group name
 						gNames[groupCount] = gName;											// saves the group name to an array
 																							// used to close group tags
-						
+						if(gName != null)
 						dList.add(String.format("%" + (4 * tabCnt) + "s", " ") + "<" + gName + ">");
 						// display XML output to the console
 						//System.out.print(String.format("%" + (4 * tabCnt) + "s", " "));
@@ -212,7 +213,7 @@ public class xmlFormat {
 						gName = gNames[groupCount];		// set the current group tag to the tag stored in the array		
 						
 						tabCnt--;		// decrement the tab counter for whitespace format
-						
+						if(gName != null)
 						dList.add(String.format("%" + (4 * tabCnt) + "s", " ") + "</" + gName + ">");
 						// display XML output to the console
 						//System.out.print(String.format("%" + (4 * tabCnt) + "s", " "));
