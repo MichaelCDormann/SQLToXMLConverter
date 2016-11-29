@@ -1,3 +1,4 @@
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -39,11 +40,7 @@ public class SQLtoXMLConverter {
 				
 				// Execute query
 				generatedQuery = parseResult.query;
-				try {
-					queryResult = db.query(generatedQuery);
-				} catch (SQLException ex) {
-					System.out.println(ex.getMessage());
-				}
+				queryResult = db.query(generatedQuery);
 				
 				// Generate XML - pass queryResult and parseResult.attrList
 				
