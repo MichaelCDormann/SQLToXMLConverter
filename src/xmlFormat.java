@@ -346,7 +346,7 @@ String d = "";
 			 if(!lst.get(counter).tableName.equals(d))
 				 {
 				 d = lst.get(counter).tableName;
-				 System.out.println("<!DOCTYPE " + d+ " INFORMTATION \""+ d + "_Info.dtd\">");
+				 System.out.println("<!DOCTYPE " + d+ " INFORMATION \""+ d + "_Info.dtd\">");
 				
 				 }
 			counter++;
