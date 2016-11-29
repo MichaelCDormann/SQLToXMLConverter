@@ -66,6 +66,10 @@ public class SQLParser {
 		
 		String result = "null";
 		
+		if(attrName.matches("[A-Za-z][A-Za-z0-9_$#]+.[A-Za-z0-9_$#]+")) {
+			return attrName.substring(0, attrName.indexOf(".")).toUpperCase();
+		}
+		
 		// loop through the keys (table names) and search through each list of attributes for a match
 		// return the table name where it matched
 		while(names.hasMoreElements()) {
