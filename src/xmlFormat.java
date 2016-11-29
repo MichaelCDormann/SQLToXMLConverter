@@ -325,36 +325,39 @@ public class xmlFormat {
 	
 	public static ArrayList DTD(ResultSet ret, ArrayList<Attribute> lst){		//when this function is called it will print the DTD Information
 		
+
+		ArrayList<String> dtdlist = new ArrayList<String>();
+
 		int counter = 0;
 		int STnum = 0;
 		int EDnum = 0;
 		int length = lst.size();
 		boolean flag= false;
 		String asdf ="";
-	System.out.println(" \n \n \n");
-	System.out.println("<?xml version ='1.0'?>");
+	
+	dtdlist.add("<?xml version ='1.0'?>");
 	
 	
 	while(!flag){
 		asdf =lst.get(counter).tableName;
-	System.out.println("<!DOCTYPE "+ asdf+ " [ \n" );
-	System.out.print("<!ELEMENT " + asdf+ " (" ) ;
+	dtdlist.add("<!DOCTYPE "+ asdf+ " [ \n" );
+	dtdlist.add("<!ELEMENT " + asdf+ " (" ) ;
 	STnum = counter ;
 	System.out.print(lst.get(counter++).name );
 	
 	 while((counter< length) &&  asdf.equals(lst.get(counter).tableName))
 	{
-		System.out.print(", " + lst.get(counter++).name);
+		dtdlist.add(", " + lst.get(counter++).name);
 	}
-	System.out.print(")> \n \n");
+	dtdlist.add(")> \n \n");
 	EDnum = counter;
 	counter = STnum;
 	
 	while(counter< (EDnum)){
-	System.out.println("<!ELEMENT  " + lst.get(counter++).name + " (#PCDATA)> \n");
+	dtdlist.add("<!ELEMENT  " + lst.get(counter++).name + " (#PCDATA)> \n");
 	}
 	
-	System.out.println("]> \n");
+	dtdlist.add("]> \n");
 	
 	if(flag == false && ((counter) == length)){
 		flag =true;
@@ -362,7 +365,9 @@ public class xmlFormat {
 	}
 	
 	}
+	 
 	
+	return dtdlist;
 	}
 	public static void pDTD(ArrayList<Attribute> lst){
 	int counter = 0;
