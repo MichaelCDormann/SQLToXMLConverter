@@ -38,6 +38,7 @@ public class SQLParser {
 			tmpTableNames.add(result.getString(1));
 		}
 		
+		// constrain the tableNames list to those only found in the database and in the from portion of the query
 		int fromIndex = this.tokenList.indexOf("from");
 		fromIndex++;
 		for(int i = fromIndex; i < this.tokenList.size(); i++) {
