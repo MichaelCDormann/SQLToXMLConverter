@@ -18,7 +18,7 @@ import java.util.Scanner;
 
 public class xmlFormat {
 	
-	public xmlFormat(ResultSet ret, ArrayList<Attribute> lst){
+	public xmlFormat(ResultSet ret, ArrayList<Attribute> lst) throws SQLException{
 		XML(ret,lst);
 		
 	}
@@ -29,7 +29,7 @@ public class xmlFormat {
 	static ArrayList<String> dtdList;
 	static ArrayList<String> xsdList;
 	
-	public static void XML(ResultSet ret, ArrayList<Attribute> lst) {
+	public static void XML(ResultSet ret, ArrayList<Attribute> lst) throws SQLException {
 		dList = new ArrayList<String>();
 		 dtdList = new ArrayList<String>();
 		xsdList = new ArrayList<String>();
@@ -349,12 +349,12 @@ String d = "";
 
 	}
 	
-	public static ArrayList XSD (ResultSet ret, ArrayList<Attribute> lst) {		//when this function is called it will print XSD 
+	public static ArrayList XSD (ResultSet ret, ArrayList<Attribute> lst) throws SQLException {		//when this function is called it will print XSD 
 		
 		int counter = 0;
 		int tabCnt = 1;
 		String tableName = lst.get(counter).tableName;
-		//ResultSetMetaData rsmd = ret.getMetaData();
+		ResultSetMetaData rsmd = ret.getMetaData();
 		
 		xsdList.add("<?xml version=\"1.0\"?>");
 		
@@ -371,8 +371,8 @@ String d = "";
 			while (counter < lst.size() && tableName.equals((lst.get(counter).tableName)))
 			{
 				xsdList.add(String.format("%" + (4 * tabCnt) + "s", " ") + "<xsd:element name=\"" + lst.get(counter).name + "\" type=\"xsd:" +
-						"string\" maxOccurs=\"1\" minOccurs=\"1\" />");
-						//rsmd.getColumnType(counter) + "\" maxOccurs=\"1\" minOccurs=\"1\" />");
+						//"string\" maxOccurs=\"1\" minOccurs=\"1\" />");
+						rsmd.getColumnTypeName(counter + 1) + "\" maxOccurs=\"1\" minOccurs=\"1\" />");
 				
 				counter++;
 			}
