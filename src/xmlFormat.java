@@ -22,6 +22,7 @@ public class xmlFormat {
 	public xmlFormat(ResultSet ret, ArrayList<Attribute> lst){
 		XML(ret,lst);
 		
+		
 	}
 	
 	static ResultSet rSet;					// make ResultSet global
@@ -89,7 +90,6 @@ public class xmlFormat {
 					
 					dList.add("<A Record>");
 					//System.out.println("<A Record>");	// display XML output to the console
-					
 					tagCnt++;		// increase the counter for the <A Record> tag
 				}
 				
@@ -197,26 +197,26 @@ public class xmlFormat {
 					groupFlag = false;		// reset the flag for grouping
 				}
 				
-				else {
+				//else 
 					
 					dList.add("</A Record>");
 					// display XML output to the console
 					//System.out.println("</A Record>");
 					
-					tagCnt--;		// decrement the tag counter
-				}
+					//tagCnt--;		// decrement the tag counter
+			
 				
 				colCount = 0;		// reset the column counter for the next ResultSet data row
 			}	// end row while loop
 			
-			while (tagCnt > 0) {	// checks that all <A Record> tags are closed
+			//while (tagCnt > 0) {	// checks that all <A Record> tags are closed
 				
-				dList.add("</A Record>");
+				//dList.add("</A Record>");
 				// display XML output to the console
 				//System.out.println("</A Record>");
 				
 				tagCnt--;		// decrement the tag counter
-			}
+			//}
 			
 			dList.add("</This Query>");
 			// display XML output to the console
