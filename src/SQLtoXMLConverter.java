@@ -1,3 +1,4 @@
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -9,7 +10,10 @@ public class SQLtoXMLConverter {
 		// Create Database and SQLParser objects to be used in the rest of the program
 		Database db = new Database("jdbc:oracle:thin:@olympia.unfcsd.unf.edu:1521:dworcl", "ozzieosprey", "mytastytacos");
 		ArrayList<String> attrList = new ArrayList<String>(); 
-		SQLParser parser = new SQLParser(db);
+		SQLParser parser;
+		ParseResult parseResult;
+		ResultSet queryResult;
+		String generatedQuery;
 		
 		// Create strings to keep track of menu results
 		String menuState = "NONE";
@@ -29,10 +33,22 @@ public class SQLtoXMLConverter {
 			query = result[1];
 			
 			// Parse the query
-			if(query != null)
-				parser.parseQuery(query);
+			if(query != null) {
+				parser = new SQLParser(db);
+				parseResult = parser.parseQuery(query);
+				
+				// Execute query
+				generatedQuery = parseResult.query;
+				try {
+					queryResult = db.query(generatedQuery);
+				} catch (SQLException ex) {
+					System.out.println(ex.getMessage());
+				}
+				
+				// Generate XML - pass queryResult and parseResult.attrList
+				
+			}
 			
-			// Generate XML
 		}
 		
 		db.close();
