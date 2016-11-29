@@ -18,44 +18,6 @@ import java.util.Scanner;
 
 public class xmlFormat {
 	
-	//for testing purposes
-
-	public static void main(String[] args) {
-		ArrayList<Attribute> testList = new ArrayList<Attribute>();
-   		
-		Attribute temp = new Attribute();
-		temp.name = "id";
-		temp.tableName = "person";
-			
-		Attribute temp2 = new Attribute();
-		Group gp = new Group();
-		gp.name = "Tacos";
-		gp.compTo=temp;
-		temp2.compFlag=true;
-		temp2.group=gp;
-		temp2.name = "name";
-		temp2.tableName = "person";
-		
-		Attribute temp3 = new Attribute();
-		temp3.name = "ids";
-		temp3.tableName = "PART";
-				
-		Attribute temp4 =new Attribute();
-		temp4.name = "CITY";
-		temp4.tableName="PART";
-		temp4.group = gp;
-		
-			
-		testList.add(temp);
-		testList.add(temp2);
-		//testList.add(temp3);
-		//testList.add(temp4);
-	   		
-		Database parser = new Database("jdbc:sqlite:sample.db","","");
-		
-
-		ResultSet adsf=	parser.query("SELECT * FROM person");
-
 	public xmlFormat(ResultSet ret, ArrayList<Attribute> lst){
 		XML(ret,lst);
 		
