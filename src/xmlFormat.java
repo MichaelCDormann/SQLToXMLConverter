@@ -19,9 +19,8 @@ import java.util.Scanner;
 public class xmlFormat {
 	
 	public xmlFormat(ResultSet ret, ArrayList<Attribute> lst) throws SQLException{
+		
 		XML(ret,lst);
-		
-		
 	}
 	
 	static ResultSet rSet;					// make ResultSet global
@@ -32,15 +31,14 @@ public class xmlFormat {
 	
 	public static void XML(ResultSet ret, ArrayList<Attribute> lst) throws SQLException {
 		dList = new ArrayList<String>();
-		 dtdList = new ArrayList<String>();
+		dtdList = new ArrayList<String>();
 		xsdList = new ArrayList<String>();
 		rSet = ret;								// set the ResultSet to the global variable
-		aList =lst;					// set the ArrayList to the global variable
+		aList =lst;								// set the ArrayList to the global variable
 		int colCount = 0; 						// used to keep track of the current column
 		int groupCount = 0;						// used to keep track of the group scope
 		int length = aList.size();				// used to track the length of the ArrayList
 		int tabCnt = 1;							// used to format tab whitespace for console output
-		int tagCnt = 0;							// used to track the <A Record> tags
 		boolean groupFlag = false;				// used to keep track of grouping
 		boolean openFlag = false;				//used to make sure we close A REcord
 		boolean groupCompFlag = false;
@@ -53,8 +51,8 @@ public class xmlFormat {
 		Scanner input = new Scanner(System.in);
 		String selection = "";
 		
-		while (!selection.equals( "1") && !selection.equals( "2") && !selection.equals("3"))
-		{
+		while (!selection.equals( "1") && !selection.equals( "2") && !selection.equals("3")) {
+
 			System.out.println("\n-----------XML MENU------------");
 			
 			System.out.println("1. Display XML to the console.");
@@ -64,8 +62,8 @@ public class xmlFormat {
 			System.out.println("Enter your selection:");
 			selection = input.nextLine();
 
-			if (!selection.equals( "1") && !selection.equals( "2") && !selection.equals("3"))
-			{
+			if (!selection.equals( "1") && !selection.equals( "2") && !selection.equals("3")) {
+
 				System.out.println("Invalid selection.  Try again.");
 			}
 		}
@@ -73,15 +71,6 @@ public class xmlFormat {
 		try {		// error handling for SQLException
 			
 			dList.add("<?xml version ='1.0'?>");
-			// display XML output to the console
-
-			//System.out.println("<?xml version ='1.0'?>");
-			//System.out.println("<This Query>");
-
-		//	System.out.println("<?xml version ='1.0'?>");
-			
-			
-			
 			dList.add("<This Query>");
 
 			while (rSet.next()) {		// move ResultSet to the next data row
@@ -90,8 +79,6 @@ public class xmlFormat {
 					
 					dList.add("<A Record>");
 					openFlag =true;
-					//System.out.println("<A Record>");	// display XML output to the console
-					tagCnt++;		// increase the counter for the <A Record> tag
 				}
 				
 				// initialize the variables for the current ResultSet data row
@@ -163,9 +150,6 @@ public class xmlFormat {
 
 						if(gName != null)
 						dList.add(String.format("%" + (4 * tabCnt) + "s", " ") + "<" + gName + ">");
-						// display XML output to the console
-						//System.out.print(String.format("%" + (4 * tabCnt) + "s", " "));
-						//System.out.println("<" + gName + ">");
 						
 						tabCnt++;		// increment the tab counter for whitespace format
 					}
@@ -179,9 +163,6 @@ public class xmlFormat {
 																							// used to close group tags
 						if(gName != null)
 						dList.add(String.format("%" + (4 * tabCnt) + "s", " ") + "<" + gName + ">");
-						// display XML output to the console
-						//System.out.print(String.format("%" + (4 * tabCnt) + "s", " "));
-						//System.out.println("<" + gName + ">");
 						
 						tabCnt++;		// increment the tab counter for whitespace format
 					}
@@ -197,12 +178,6 @@ public class xmlFormat {
 							"<" + alias.toUpperCase() + " table=\""+ tabName + "\" name=\"" + colName +"\">" +
 							prevAtName + "</" + alias.toUpperCase() + ">");
 					
-					// display XML output to the console
-					//System.out.print(String.format("%" + (4 * tabCnt) + "s", " "));
-					//System.out.print("<" + alias.toUpperCase() + " table=\""+ tabName + "\" name=\"" + colName +"\">");
-					//System.out.print(prevAtName = rSet.getString(colName));
-					//System.out.println("</" + alias.toUpperCase() + ">");
-					
 					colCount++;			// increase the column counter for the inner loop
 				}	// end column while loop
 				
@@ -215,9 +190,6 @@ public class xmlFormat {
 						tabCnt--;		// decrement the tab counter for whitespace format
 						if(gName != null)
 						dList.add(String.format("%" + (4 * tabCnt) + "s", " ") + "</" + gName + ">");
-						// display XML output to the console
-						//System.out.print(String.format("%" + (4 * tabCnt) + "s", " "));
-						//System.out.println("</" + gName + ">");
 						
 						groupCount--;		// decrement the group counter
 					}
@@ -230,46 +202,25 @@ public class xmlFormat {
 					openFlag =false;
 				}
 				
-					// display XML output to the console
-					//System.out.println("</A Record>");
-					
-					//tagCnt--;		// decrement the tag counter
-			
-				
 				colCount = 0;		// reset the column counter for the next ResultSet data row
 			}	// end row while loop
 			
-			//while (tagCnt > 0) {	// checks that all <A Record> tags are closed
-				
-				//dList.add("</A Record>");
-				// display XML output to the console
-				//System.out.println("</A Record>");
-				
-				tagCnt--;		// decrement the tag counter
-			//}
-			
-			dList.add("</This Query>");
-			// display XML output to the console
-			// System.out.println("</This Query>");
-			
+			dList.add("</This Query>");			
 			
 			DTD(rSet,aList);
 		} catch (SQLException e) {		// catch SQLException
 			e.printStackTrace();		// display stack trace for thrown exception
 		}
 		
-		if (selection.equals("1"))
-		{
+		if (selection.equals("1")) {
 			Parray(dList);
 		}
 		
-		else if (selection.equals("2"))
-		{
+		else if (selection.equals("2")) {
 			Sarray(dList,"XMLFile.xml");
 		}
 		
-		else
-		{
+		else {
 			Parray(dList);
 			Sarray(dList,"XMLFile.xml");
 		}
@@ -319,9 +270,7 @@ public class xmlFormat {
 	
 	public static ArrayList DTD(ResultSet ret, ArrayList<Attribute> lst){		//when this function is called it will print the DTD Information
 		
-
 		ArrayList<String> dtdlist = new ArrayList<String>();
-
 		int counter = 0;
 		int STnum = 0;
 		int EDnum = 0;
@@ -329,60 +278,56 @@ public class xmlFormat {
 		boolean flag= false;
 		String asdf ="";
 	
-	dtdlist.add("<?xml version ='1.0'?>");
+		dtdlist.add("<?xml version ='1.0'?>");
 	
 	
-	while(!flag){
+		while(!flag){
 		asdf =lst.get(counter).tableName;
-	dtdlist.add("<!DOCTYPE "+ asdf+ " [ \n" );
-	String temp = "";
-	temp = ("<!ELEMENT " + asdf+ " (" ) ;
-	STnum = counter ;
-	temp +=(lst.get(counter++).name );
+		dtdlist.add("<!DOCTYPE "+ asdf+ " [ \n" );
+		String temp = "";
+		temp = ("<!ELEMENT " + asdf+ " (" ) ;
+		STnum = counter ;
+		temp +=(lst.get(counter++).name );
 	
-	 while((counter< length) &&  asdf.equals(lst.get(counter).tableName))
-	{
-		temp+=(", " + lst.get(counter++).name);
-	}
-	temp +=(")> \n \n");
-	EDnum = counter;
-	counter = STnum;
+		while((counter< length) &&  asdf.equals(lst.get(counter).tableName))
+		{
+			temp+=(", " + lst.get(counter++).name);
+		}
+		temp +=(")> \n \n");
+		EDnum = counter;
+		counter = STnum;
+		
+		dtdlist.add(temp);
 	
-	dtdlist.add(temp);
+		while(counter< (EDnum)){
+			dtdlist.add("<!ELEMENT  " + lst.get(counter++).name + " (#PCDATA)> \n");
+		}
 	
-	while(counter< (EDnum)){
-	dtdlist.add("<!ELEMENT  " + lst.get(counter++).name + " (#PCDATA)> \n");
-	}
+		dtdlist.add("]> \n");
 	
-	
-	dtdlist.add("]> \n");
-	
-	if(flag == false && ((counter) == length)){
-		flag =true;
-		counter++;
-	}
-	
-	}
+		if(flag == false && ((counter) == length)){
+			flag =true;
+			counter++;
+		}
+		
+		}
 	 
 	
-	return dtdlist;
-	}
-	public static void pDTD(ArrayList<Attribute> lst){
-	int counter = 0;
-	int length = lst.size();
-String d = "";
-		 while(counter< length)
-		 {
-			 if(!lst.get(counter).tableName.equals(d))
-				 {
-				 d = lst.get(counter).tableName;
-				 System.out.println("<!DOCTYPE " + d+ " INFORMTATION \""+ d + "_Info.dtd\">");
-				
-				 }
-			counter++;
+		return dtdlist;
+		}
+		public static void pDTD(ArrayList<Attribute> lst){
+		int counter = 0;
+		int length = lst.size();
+		String d = "";
+		while(counter< length)
+		{
+			if(!lst.get(counter).tableName.equals(d))
+			{
+				d = lst.get(counter).tableName;
+				System.out.println("<!DOCTYPE " + d+ " INFORMTATION \""+ d + "_Info.dtd\">");
 			}
-		 
-
+			counter++;
+		}
 	}
 	
 	public static ArrayList XSD (ResultSet ret, ArrayList<Attribute> lst) throws SQLException {		//when this function is called it will print XSD 
@@ -407,7 +352,6 @@ String d = "";
 			while (counter < lst.size() && tableName.equals((lst.get(counter).tableName)))
 			{
 				xsdList.add(String.format("%" + (4 * tabCnt) + "s", " ") + "<xsd:element name=\"" + lst.get(counter).name + "\" type=\"xsd:" +
-						//"string\" maxOccurs=\"1\" minOccurs=\"1\" />");
 						rsmd.getColumnTypeName(counter + 1) + "\" maxOccurs=\"1\" minOccurs=\"1\" />");
 				
 				counter++;
@@ -454,7 +398,6 @@ String d = "";
 						}
 				}
 				
-				
 				mout.println(amsd.get(i));
 				i++;
 			}
@@ -466,7 +409,6 @@ String d = "";
 		} catch (UnsupportedEncodingException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
-		}
-		
+		}	
 	}
 }
