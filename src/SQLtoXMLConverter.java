@@ -15,6 +15,7 @@ public class SQLtoXMLConverter {
 		ParseResult parseResult;
 		ResultSet queryResult;
 		String generatedQuery;
+		xmlFormat xmlResult;
 		
 		// Create strings to keep track of menu results
 		String menuState = "NONE";
@@ -43,6 +44,7 @@ public class SQLtoXMLConverter {
 				queryResult = db.query(generatedQuery);
 				
 				// Generate XML - pass queryResult and parseResult.attrList
+				xmlResult = new xmlFormat(queryResult, parseResult.attrList);
 				
 			}
 			
