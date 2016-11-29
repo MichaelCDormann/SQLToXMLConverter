@@ -68,7 +68,7 @@ public class SQLParser {
 		String result = null;
 		
 		// if the attrName is of form tablename.columnname return the tablename
-		if(attrName.matches("[A-Za-z][A-Za-z0-9_$#]+\\.[A-Za-z0-9_$#]+")) {
+		if(attrName.matches("[A-Za-z][A-Za-z0-9_$#]*\\.[A-Za-z0-9_$#]+")) {
 			return attrName.substring(0, attrName.indexOf(".")).toUpperCase();
 		}
 		
@@ -115,7 +115,7 @@ public class SQLParser {
 			if(attr.compTo != null)
 				System.out.println("\t" + attr.compTo.name);
 			if(attr.group != null)
-				System.out.println("\t" + attr.group.name + " " + attr.group.compTo);
+				System.out.println("\t" + attr.group.name + " " + attr.group.compTo.name);
 		}
 		ParseResult result = new ParseResult(this.generatedQuery, this.attrList);
 		return result;
