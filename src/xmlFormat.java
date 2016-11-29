@@ -42,7 +42,8 @@ public class xmlFormat {
 		int tabCnt = 1;							// used to format tab whitespace for console output
 		int tagCnt = 0;							// used to track the <A Record> tags
 		boolean groupFlag = false;				// used to keep track of grouping
-		boolean openFlag = false;
+		boolean openFlag = false;				//used to make sure we close A REcord
+		boolean groupCompFlag = false;
 		boolean compressionFlag = false;		// used to keep track of compression
 		String[] gNames = new String[5];		// used to keep track of the name of the groups
 		String tempGroup = "";					// used to track the name of the current group
@@ -111,7 +112,31 @@ public class xmlFormat {
 						compressionFlag = true;						// flag to track if compression is processing
 						tempAtname = aList.get(colCount-1).name;	// stores the previous column's name
 					}
-					
+					else if(aList.get(colCount).group!=null &&  aList.get(colCount).group.compFlag ==true){
+						
+						if(groupCompFlag ==false){
+							tempGroup = prevAtName;
+						compressionFlag = true;
+						groupCompFlag = true;
+						tempAtname = aList.get(colCount-1).name;
+						}
+					}
+					else if (groupCompFlag ==true && tempAtname.equals(aList.get(colCount).name)){
+						
+						String f = aList.get(colCount).name;		// stores the current Attribute's name
+						String d = rSet.getString(f);				// stores the current ResultSet's name
+						
+						if (tempGroup.equals(d)) {		// checks if the current group equals the previous group
+							openFlag = true;
+							colCount++;					// increase the column counter for the inner loop
+							continue colLoop;			// proceed to the next column
+						}
+						dList.add("</A Record>");
+						dList.add("<A Record>");
+						compressionFlag =false;
+						groupCompFlag =false;
+						
+					}
 					else if (compressionFlag == true  && tempAtname.equals(aList.get(colCount).name)) {
 
 						String f = aList.get(colCount).name;		// stores the current Attribute's name
@@ -346,7 +371,7 @@ String d = "";
 			 if(!lst.get(counter).tableName.equals(d))
 				 {
 				 d = lst.get(counter).tableName;
-				 System.out.println("<!DOCTYPE " + d+ " INFORMATION \""+ d + "_Info.dtd\">");
+				 System.out.println("<!DOCTYPE " + d+ " INFORMTATION \""+ d + "_Info.dtd\">");
 				
 				 }
 			counter++;
