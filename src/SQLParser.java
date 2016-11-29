@@ -115,7 +115,7 @@ public class SQLParser {
 			if(attr.compTo != null)
 				System.out.println("\t" + attr.compTo.name);
 			if(attr.group != null)
-				System.out.println("\t" + attr.group.name + " " + attr.group.compTo.name);
+				System.out.println("\t" + attr.group.name + " " + (attr.group.compTo != null? attr.group.compTo.name : "null"));
 		}
 		ParseResult result = new ParseResult(this.generatedQuery, this.attrList);
 		return result;
