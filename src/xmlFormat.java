@@ -38,10 +38,7 @@ public class xmlFormat {
 		Attribute temp3 = new Attribute();
 		temp3.name = "ids";
 		temp3.tableName = "PART";
-		gp.compTo = null;
-		gp.name = "";
-		temp3.group=gp;
-		
+				
 		Attribute temp4 =new Attribute();
 		temp4.name = "CITY";
 		temp4.tableName="PART";
@@ -120,7 +117,6 @@ public class xmlFormat {
 			
 			System.out.println("<This Query>");
 
-			
 			while (rSet.next()) {		// move ResultSet to the next data row
 				
 				if (compressionFlag == false) {		// checks if data is to be compressed
