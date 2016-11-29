@@ -18,7 +18,6 @@ import java.util.Scanner;
 
 public class xmlFormat {
 	
-	//for testing purposes
 	public xmlFormat(ResultSet ret, ArrayList<Attribute> lst){
 		XML(ret,lst);
 		
@@ -83,7 +82,6 @@ public class xmlFormat {
 			
 			dList.add("<This Query>");
 
-			
 			while (rSet.next()) {		// move ResultSet to the next data row
 				
 				if (compressionFlag == false) {		// checks if data is to be compressed
