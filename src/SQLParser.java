@@ -5,8 +5,6 @@ import java.util.Hashtable;
 import java.util.Stack;
 import java.util.regex.Pattern;
 
-// TODO create some sort of return object that contains generatedQuery and the attrList?
-
 public class SQLParser {
 	
 	Database db;							// database connection object
@@ -74,7 +72,7 @@ public class SQLParser {
 	}
 	
 	
-	public void parseQuery(String query){
+	public ParseResult parseQuery(String query){
 		// create the metadata... basically just the attributes hashtable
 		try{
 			createMetaData();
@@ -104,7 +102,8 @@ public class SQLParser {
 			if(attr.group != null)
 				System.out.println("\t" + attr.group.name + " " + attr.group.compTo);
 		}
-		
+		ParseResult result = new ParseResult(this.generatedQuery, this.attrList);
+		return result;
 	}
 	
 	
