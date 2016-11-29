@@ -26,10 +26,8 @@ public class SQLParser {
 	}
 	
 	private void createMetaData() throws SQLException {
-		if(this.attributes != null)
-			this.attributes.clear();
-		this.attributes = new Hashtable<String, ArrayList<String>>();
-		
+		attributes = new Hashtable<String, ArrayList<String>>();
+		ArrayList<String> tmpTableNames  = new ArrayList<String>();
 		ArrayList<String> tableNames  = new ArrayList<String>();
 		ArrayList<String> attrList;
 		ResultSet result;
@@ -37,7 +35,15 @@ public class SQLParser {
 		// create a list of tables from the catalog
 		result = this.db.query("Select * From cat");
 		while(result.next()) {
-			tableNames.add(result.getString(1));
+			tmpTableNames.add(result.getString(1));
+		}
+		
+		int fromIndex = this.tokenList.indexOf("from");
+		fromIndex++;
+		for(int i = fromIndex; i < this.tokenList.size(); i++) {
+			if(tmpTableNames.contains(this.tokenList.get(i).toUpperCase())) {
+				tableNames.add(this.tokenList.get(i).toUpperCase());
+			}
 		}
 		
 		// for each table query the database for the attributes, then store the attributes and tables
@@ -76,14 +82,6 @@ public class SQLParser {
 	
 	
 	public ParseResult parseQuery(String query){
-		// create the metadata... basically just the attributes hashtable
-		try{
-			createMetaData();
-		} catch (SQLException ex) {
-			ex.printStackTrace();
-			System.exit(0);
-		}
-		
 		generatedQuery = "";
 		
 		this.tokenList = new ArrayList<String>();
@@ -92,6 +90,14 @@ public class SQLParser {
 		Tokenizer t = new Tokenizer(this.tokenList);
 		
 		t.tokenize(query);	// tokenizes query and updates tokenList with tokens
+		
+		// create the metadata... basically just the attributes hashtable
+		try{
+			createMetaData();
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+			System.exit(0);
+		}
 		
 		// call start method -- state 1 of FSM
 		startState();
