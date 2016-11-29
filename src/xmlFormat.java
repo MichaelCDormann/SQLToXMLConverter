@@ -19,47 +19,9 @@ import java.util.Scanner;
 public class xmlFormat {
 	
 	//for testing purposes
-	public static void main(String[] args) {
-		ArrayList<Attribute> testList = new ArrayList<Attribute>();
-   		
-		Attribute temp = new Attribute();
-		temp.name = "id";
-		temp.tableName = "person";
-			
-		Attribute temp2 = new Attribute();
-		Group gp = new Group();
-		gp.name = "Tacos";
-		gp.compTo=temp;
-		temp2.compFlag=true;
-		temp2.group=gp;
-		temp2.name = "name";
-		temp2.tableName = "person";
+	public xmlFormat(ResultSet ret, ArrayList<Attribute> lst){
+		XML(ret,lst);
 		
-		Attribute temp3 = new Attribute();
-		temp3.name = "ids";
-		temp3.tableName = "PART";
-		gp.compTo = null;
-		gp.name = "";
-		temp3.group=gp;
-		
-		Attribute temp4 =new Attribute();
-		temp4.name = "CITY";
-		temp4.tableName="PART";
-		temp4.group = gp;
-		
-			
-		testList.add(temp);
-		testList.add(temp2);
-		//testList.add(temp3);
-		//testList.add(temp4);
-	   		
-		Database parser = new Database("jdbc:sqlite:sample.db","","");
-		
-
-		ResultSet adsf=	parser.query("SELECT * FROM person");
-		
-		XML(adsf,testList);
-		parser.close();
 	}
 	
 	static ResultSet rSet;					// make ResultSet global
@@ -114,11 +76,11 @@ public class xmlFormat {
 			//System.out.println("<?xml version ='1.0'?>");
 			//System.out.println("<This Query>");
 
-			System.out.println("<?xml version ='1.0'?>");
+		//	System.out.println("<?xml version ='1.0'?>");
 			
-			pDTD(aList);
 			
-			System.out.println("<This Query>");
+			
+			dList.add("<This Query>");
 
 			
 			while (rSet.next()) {		// move ResultSet to the next data row
@@ -431,6 +393,8 @@ String d = "";
 		int i = 0;
 		
 		while (i< length){						//for the length of the array of strings 
+			if(i ==1)
+				pDTD(aList);
 			System.out.println(alist.get(i));
 			i++;
 		}
