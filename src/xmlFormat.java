@@ -69,9 +69,11 @@ public class xmlFormat {
 	static ArrayList<String> xsdList;
 	
 	public static void XML(ResultSet ret, ArrayList<Attribute> lst) {
-		
+		dList = new ArrayList<String>();
+		 dtdList = new ArrayList<String>();
+		xsdList = new ArrayList<String>();
 		rSet = ret;								// set the ResultSet to the global variable
-		aList =lst;								// set the ArrayList to the global variable
+		aList =lst;					// set the ArrayList to the global variable
 		int colCount = 0; 						// used to keep track of the current column
 		int groupCount = 0;						// used to keep track of the group scope
 		int length = aList.size();				// used to track the length of the ArrayList
@@ -87,7 +89,7 @@ public class xmlFormat {
 		Scanner input = new Scanner(System.in);
 		String selection = "";
 		
-		while (selection != "1" || selection != "2" || selection != "3")
+		while (!selection.equals( "1") && !selection.equals( "2") && !selection.equals("3"))
 		{
 			System.out.println("\n-----------XML MENU------------");
 			
@@ -98,7 +100,7 @@ public class xmlFormat {
 			System.out.println("Enter your selection:");
 			selection = input.nextLine();
 
-			if (selection != "1" || selection != "2" || selection != "3")
+			if (!selection.equals( "1") && !selection.equals( "2") && !selection.equals("3"))
 			{
 				System.out.println("Invalid selection.  Try again.");
 			}
@@ -271,13 +273,13 @@ public class xmlFormat {
 		
 		else if (selection.equals("2"))
 		{
-			Sarray(dList);
+			Sarray(dList,"XML.txt");
 		}
 		
 		else
 		{
 			Parray(dList);
-			Sarray(dList);
+			Sarray(dList,"XML.txt");
 		}
 		
 		dtdList = DTD(rSet, aList);
@@ -285,7 +287,7 @@ public class xmlFormat {
 		
 		String selXSD = "";
 		
-		while (selXSD != "1" || selXSD != "2" || selXSD != "3")
+		while (!selXSD.equals("1") && !selXSD.equals("2") && !selXSD.equals("3"))
 		{
 			System.out.println("\n-----------XSD/DTD MENU------------");
 			
@@ -296,7 +298,7 @@ public class xmlFormat {
 			System.out.println("Enter your selection:");
 			selXSD = input.nextLine();
 
-			if (selXSD != "1" || selXSD != "2" || selXSD != "3")
+			if (!selXSD.equals("1") && !selXSD.equals("2") && !selXSD.equals("3"))
 			{
 				System.out.println("Invalid selection.  Try again.");
 			}
@@ -304,22 +306,22 @@ public class xmlFormat {
 		
 		if (selXSD.equals("1"))
 		{
-			printDTD(dtdList);
-			printXSD(xsdList);
+			Parray(dtdList);
+			Parray(xsdList);
 		}
 		
 		else if (selXSD.equals("2"))
 		{
-			saveDTD(dtdList);
-			saveXSD(xsdList);
+			Sarray(dtdList,"dtd.txt");
+			Sarray(xsdList,"xsd.txt");
 		}
 		
 		else
 		{
-			printDTD(dtdList);
-			printXSD(xsdList);
-			saveDTD(dtdList);
-			saveXSD(xsdList);
+			Parray(dtdList);
+			Parray(xsdList);
+			Sarray(dtdList,"dtd.txt");
+			Sarray(xsdList,"xsd.txt");
 		}
 	}
 	
@@ -343,7 +345,7 @@ public class xmlFormat {
 	dtdlist.add("<!DOCTYPE "+ asdf+ " [ \n" );
 	dtdlist.add("<!ELEMENT " + asdf+ " (" ) ;
 	STnum = counter ;
-	System.out.print(lst.get(counter++).name );
+	dtdlist.add(lst.get(counter++).name );
 	
 	 while((counter< length) &&  asdf.equals(lst.get(counter).tableName))
 	{
@@ -433,10 +435,10 @@ String d = "";
 			i++;
 		}
 	}
-	public static void Sarray(ArrayList<String> amsd){			//saves the array of Strings
+	public static void Sarray(ArrayList<String> amsd,String Filename){			//saves the array of Strings
 		int i = 0;
 		int length = amsd.size();
-		try(  PrintWriter mout = new PrintWriter( "XML.txt","UTF-8" )  ){	//creates file xml.txt will overwrite if already exist
+		try(  PrintWriter mout = new PrintWriter( Filename,"UTF-8" )  ){	//creates file xml.txt will overwrite if already exist
 			while (i< length){
 				mout.println(amsd.get(i));
 				i++;
