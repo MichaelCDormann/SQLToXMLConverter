@@ -25,6 +25,7 @@ public class Attribute {
 	Attribute(String name, String tableName) {
 		
 		this.name = name;	// initialize Attribute identifying name
+		this.tableName = tableName;			// initialize Attribute table name
 		compFlag = false;	// initialize compression flag to false
 	}
 	

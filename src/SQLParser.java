@@ -1,19 +1,19 @@
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Stack;
 import java.util.regex.Pattern;
-
-// TODO create some sort of return object that contains generatedQuery and the attrList?
 
 public class SQLParser {
 	
 	Database db;							// database connection object
 	ArrayList<String> tokenList;			// list of tokens from SQL Query
 	ArrayList<Attribute> attrList;			// list of attributes to be passed to XMLFormat
+	ArrayList<String> tableList;			// list of tables populated in the from loop
 	Stack<Group> groupStack;				// list of groups that the attributes belong to
 	String generatedQuery;					// query that is generated throughout the states
-	Hashtable<String, String> attributes;	// attribute names stored with table names
+	Hashtable<String, ArrayList<String>> attributes;	// attribute names stored with table names
 	
 	
 	// constructor
@@ -21,13 +21,15 @@ public class SQLParser {
 		
 		// set local pointer for passed Database object list 
 		this.db = db;
+		this.tableList = new ArrayList<String>();
 		
 	}
 	
 	private void createMetaData() throws SQLException {
-		this.attributes = new Hashtable<String, String>();
+		this.attributes = new Hashtable<String, ArrayList<String>>();
 		
 		ArrayList<String> tableNames  = new ArrayList<String>();
+		ArrayList<String> attrList;
 		ResultSet result;
 		
 		// create a list of tables from the catalog
@@ -37,18 +39,41 @@ public class SQLParser {
 		}
 		
 		// for each table query the database for the attributes, then store the attributes and tables
-		// as key value pairs... So attributes.get(attribute_name) will return the table it belongs to
+		// as key value pairs... So attributes.get(table_name) will return an arraylist of attributes that 
+		// belong to that table
 		for(int i = 0; i < tableNames.size(); i++) {
+			attrList = new ArrayList<String>();
 			result = this.db.query("Select column_name From USER_TAB_COLUMNS Where table_name = '" + tableNames.get(i) + "'");
 			while(result.next()) {
-				this.attributes.put(result.getString(1), tableNames.get(i));
+				attrList.add(result.getString(1));
+			}
+			this.attributes.put(tableNames.get(i), attrList);
+		}
+	}
+	
+	public String getTableName(String attrName) {
+		Enumeration<String> names = this.attributes.keys();
+		ArrayList<String> attrs;
+		String name;
+		
+		String result = "null";
+		
+		// loop through the keys (table names) and search through each list of attributes for a match
+		// return the table name where it matched
+		while(names.hasMoreElements()) {
+			name = names.nextElement();
+			attrs = this.attributes.get(name);
+			for(int i = 0; i < attrs.size(); i++) {
+				if(attrs.get(i).equals(attrName.toUpperCase()))
+					result = name;
 			}
 		}
 		
+		return result;
 	}
 	
 	
-	public void parseQuery(String query){
+	public ParseResult parseQuery(String query){
 		// create the metadata... basically just the attributes hashtable
 		try{
 			createMetaData();
@@ -70,7 +95,16 @@ public class SQLParser {
 		startState();
 		
 		System.out.println(generatedQuery);
-		
+		for(int i = 0; i < this.attrList.size(); i++) {
+			Attribute attr = this.attrList.get(i);
+			System.out.println("" + attr.name + " " + attr.tableName + " " + attr.alias + " ");
+			if(attr.compTo != null)
+				System.out.println("\t" + attr.compTo.name);
+			if(attr.group != null)
+				System.out.println("\t" + attr.group.name + " " + attr.group.compTo);
+		}
+		ParseResult result = new ParseResult(this.generatedQuery, this.attrList);
+		return result;
 	}
 	
 	
@@ -201,6 +235,18 @@ public class SQLParser {
 				updateQuery("from");
 				//call 4
 				fromLoop();
+				
+				//TODO handle build attributeList from tableList info
+				for(int i = 0; i < this.tableList.size(); i++){
+					// for each table grab attribute list
+					ArrayList<String> tableAttr = this.attributes.get(this.tableList.get(i).toUpperCase());
+					for(int j = 0; j < tableAttr.size(); j++){
+						// for each attribute in list, create attribute and add to attrList
+						Attribute tmpAttr = new Attribute(tableAttr.get(j), tableList.get(i));
+						this.attrList.add(tmpAttr);
+					}
+					
+				}
 			} else {
 				try {
 					throw new ParseException("'From' was expected after '*'");
@@ -211,7 +257,9 @@ public class SQLParser {
 		}else if(isNextID()){
 			// call 3
 			attributeLoop();
-		}else{
+		}else if(nextTokenMatch("<"))
+			groupLoop();
+		else{
 			
 			try {
 				throw new ParseException("Attributes not specified");
@@ -240,14 +288,13 @@ public class SQLParser {
 			
 			// check if next matches AS for alias
 			if(nextTokenMatch("as")){
-				updateQuery("as");
 				
 				if(isNextID()){
 					
 					String tmpAlias = getNextVal();
-					this.attrList.add(  new Attribute(tmpAttrName, attributes.get(tmpAttrName), tmpAlias)  );
+					System.out.println(attributes.get(tmpAttrName));
+					this.attrList.add(  new Attribute(tmpAttrName, getTableName(tmpAttrName), tmpAlias)  );
 					getNextToken();
-					updateQuery(tmpAlias);
 					
 				}else{
 					try {
@@ -259,7 +306,7 @@ public class SQLParser {
 					
 			}else{
 				// no alias
-				this.attrList.add(  new Attribute(tmpAttrName, attributes.get(tmpAttrName))  );
+				this.attrList.add(  new Attribute(tmpAttrName, getTableName(tmpAttrName))  );
 			}
 			
 			attributeLoop();
@@ -279,16 +326,14 @@ public class SQLParser {
 			
 			// check if next matches AS for alias
 			if(nextTokenMatch("as")){
-				updateQuery("as");
 				
 				if(isNextID()){
 					
 					String tmpAlias = getNextVal();
-					Attribute tmpAttr = new Attribute(tmpAttrName, attributes.get(tmpAttrName), tmpAlias);
+					Attribute tmpAttr = new Attribute(tmpAttrName, getTableName(tmpAttrName), tmpAlias);
 					tmpAttr.addCompression(this.attrList.get(this.attrList.size()-1));
 					this.attrList.add(tmpAttr);
 					getNextToken();
-					updateQuery(tmpAlias);
 					
 				}else{
 					try {
@@ -300,7 +345,7 @@ public class SQLParser {
 					
 			}else{
 				// no alias
-				Attribute tmpAttr = new Attribute(tmpAttrName, attributes.get(tmpAttrName));
+				Attribute tmpAttr = new Attribute(tmpAttrName, getTableName(tmpAttrName));
 				tmpAttr.addCompression(this.attrList.get(this.attrList.size()-1));
 				this.attrList.add(tmpAttr);
 			}
@@ -328,6 +373,12 @@ public class SQLParser {
 		String remaining = "";
 		for(int i = 0; i < this.tokenList.size(); i++) {
 			remaining += (" " + this.tokenList.get(i));
+			
+			// if we have a table name add to the list
+			if(this.attributes.containsKey(this.tokenList.get(i).toUpperCase())){
+				this.tableList.add(this.tokenList.get(i));
+			}
+			
 		}
 		this.generatedQuery += remaining;
 	}
@@ -398,7 +449,7 @@ public class SQLParser {
 		
 		if(nextTokenMatch(",")) {
 			updateQuery(",");
-			attributeLoop();
+			groupAttributeLoop();
 			
 		} else if(isNextID()){
 			
@@ -409,16 +460,14 @@ public class SQLParser {
 			
 			// check if next matches AS for alias
 			if(nextTokenMatch("as")){
-				updateQuery("as");
 				
 				if(isNextID()){
 					
 					String tmpAlias = getNextVal();
-					Attribute tmpAttr = new Attribute(tmpAttrName, attributes.get(tmpAttrName), tmpAlias);
+					Attribute tmpAttr = new Attribute(tmpAttrName, getTableName(tmpAttrName), tmpAlias);
 					tmpAttr.addGroup(this.groupStack.peek());
 					this.attrList.add(tmpAttr);
 					getNextToken();
-					updateQuery(tmpAlias);
 					
 				}else{
 					try {
@@ -430,7 +479,7 @@ public class SQLParser {
 					
 			}else{
 				// no alias					
-				Attribute tmpAttr = new Attribute(tmpAttrName, attributes.get(tmpAttrName));
+				Attribute tmpAttr = new Attribute(tmpAttrName, getTableName(tmpAttrName));
 				tmpAttr.addGroup(this.groupStack.peek());
 				this.attrList.add(tmpAttr);
 			}
