@@ -11,6 +11,7 @@ public class SQLParser {
 	Database db;							// database connection object
 	ArrayList<String> tokenList;			// list of tokens from SQL Query
 	ArrayList<Attribute> attrList;			// list of attributes to be passed to XMLFormat
+	ArrayList<String> tableList;			// list of tables populated in the from loop
 	Stack<Group> groupStack;				// list of groups that the attributes belong to
 	String generatedQuery;					// query that is generated throughout the states
 	Hashtable<String, String> attributes;	// attribute names stored with table names
