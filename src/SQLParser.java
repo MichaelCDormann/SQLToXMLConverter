@@ -40,7 +40,8 @@ public class SQLParser {
 		}
 		
 		// for each table query the database for the attributes, then store the attributes and tables
-		// as key value pairs... So attributes.get(attribute_name) will return the table it belongs to
+		// as key value pairs... So attributes.get(table_name) will return an arraylist of attributes that 
+		// belong to that table
 		for(int i = 0; i < tableNames.size(); i++) {
 			attrList.clear();
 			result = this.db.query("Select column_name From USER_TAB_COLUMNS Where table_name = '" + tableNames.get(i) + "'");
