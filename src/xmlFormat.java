@@ -335,21 +335,25 @@ public class xmlFormat {
 	while(!flag){
 		asdf =lst.get(counter).tableName;
 	dtdlist.add("<!DOCTYPE "+ asdf+ " [ \n" );
-	dtdlist.add("<!ELEMENT " + asdf+ " (" ) ;
+	String temp = "";
+	temp = ("<!ELEMENT " + asdf+ " (" ) ;
 	STnum = counter ;
-	dtdlist.add(lst.get(counter++).name );
+	temp +=(lst.get(counter++).name );
 	
 	 while((counter< length) &&  asdf.equals(lst.get(counter).tableName))
 	{
-		dtdlist.add(", " + lst.get(counter++).name);
+		temp+=(", " + lst.get(counter++).name);
 	}
-	dtdlist.add(")> \n \n");
+	temp +=(")> \n \n");
 	EDnum = counter;
 	counter = STnum;
+	
+	dtdlist.add(temp);
 	
 	while(counter< (EDnum)){
 	dtdlist.add("<!ELEMENT  " + lst.get(counter++).name + " (#PCDATA)> \n");
 	}
+	
 	
 	dtdlist.add("]> \n");
 	
@@ -431,9 +435,26 @@ String d = "";
 	}
 	public static void Sarray(ArrayList<String> amsd,String Filename){			//saves the array of Strings
 		int i = 0;
+		int counter = 0;
 		int length = amsd.size();
+		int length1 = aList.size();
 		try(  PrintWriter mout = new PrintWriter( Filename,"UTF-8" )  ){	//creates file xml.txt will overwrite if already exist
 			while (i< length){
+				
+				if(i==1){
+					String d = "";
+					 while(counter< length1)
+					 {
+						 if(!aList.get(counter).tableName.equals(d))
+							 {
+							 d = aList.get(counter).tableName;
+							 mout.println("<!DOCTYPE " + d+ " INFORMTATION \""+ d + "_Info.dtd\">");		
+							 }
+						counter++;
+						}
+				}
+				
+				
 				mout.println(amsd.get(i));
 				i++;
 			}
