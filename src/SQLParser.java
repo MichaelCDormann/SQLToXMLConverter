@@ -68,7 +68,7 @@ public class SQLParser {
 		String result = "null";
 		
 		// if the attrName is of form tablename.columnname return the tablename
-		if(attrName.matches("[A-Za-z][A-Za-z0-9_$#]+.[A-Za-z0-9_$#]+")) {
+		if(attrName.matches("[A-Za-z][A-Za-z0-9_$#]+\\.[A-Za-z0-9_$#]+")) {
 			return attrName.substring(0, attrName.indexOf(".")).toUpperCase();
 		}
 		
