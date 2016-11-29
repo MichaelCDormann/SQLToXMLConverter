@@ -276,7 +276,6 @@ public class SQLParser {
 			
 			// check if next matches AS for alias
 			if(nextTokenMatch("as")){
-				updateQuery("as");
 				
 				if(isNextID()){
 					
@@ -284,7 +283,6 @@ public class SQLParser {
 					System.out.println(attributes.get(tmpAttrName));
 					this.attrList.add(  new Attribute(tmpAttrName, getTableName(tmpAttrName), tmpAlias)  );
 					getNextToken();
-					updateQuery(tmpAlias);
 					
 				}else{
 					try {
@@ -316,7 +314,6 @@ public class SQLParser {
 			
 			// check if next matches AS for alias
 			if(nextTokenMatch("as")){
-				updateQuery("as");
 				
 				if(isNextID()){
 					
@@ -325,7 +322,6 @@ public class SQLParser {
 					tmpAttr.addCompression(this.attrList.get(this.attrList.size()-1));
 					this.attrList.add(tmpAttr);
 					getNextToken();
-					updateQuery(tmpAlias);
 					
 				}else{
 					try {
@@ -446,7 +442,6 @@ public class SQLParser {
 			
 			// check if next matches AS for alias
 			if(nextTokenMatch("as")){
-				updateQuery("as");
 				
 				if(isNextID()){
 					
@@ -455,7 +450,6 @@ public class SQLParser {
 					tmpAttr.addGroup(this.groupStack.peek());
 					this.attrList.add(tmpAttr);
 					getNextToken();
-					updateQuery(tmpAlias);
 					
 				}else{
 					try {
