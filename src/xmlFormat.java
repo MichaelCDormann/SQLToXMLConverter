@@ -30,11 +30,28 @@ public class xmlFormat {
 		temp2.group=gp;
 		temp2.name = "name";
 		temp2.tableName = "person";
+		
+		Attribute temp3 = new Attribute();
+		temp3.name = "ids";
+		temp3.tableName = "PART";
+		gp.compTo = null;
+		gp.name = "";
+		temp3.group=gp;
+		
+		Attribute temp4 =new Attribute();
+		temp4.name = "CITY";
+		temp4.tableName="PART";
+		temp4.group = gp;
+		
 			
 		testList.add(temp);
 		testList.add(temp2);
+		//testList.add(temp3);
+		//testList.add(temp4);
 	   		
 		Database parser = new Database("jdbc:sqlite:sample.db","","");
+		
+
 		ResultSet adsf=	parser.query("SELECT * FROM person");
 		
 		XML(adsf,testList);
@@ -64,6 +81,9 @@ public class xmlFormat {
 			
 			// display XML output to the console
 			System.out.println("<?xml version ='1.0'?>");
+			
+			pDTD(aList);
+			
 			System.out.println("<This Query>");
 			
 			while (rSet.next()) {		// move ResultSet to the next data row
@@ -123,7 +143,7 @@ public class xmlFormat {
 						tabCnt++;		// increment the tab counter for whitespace format
 					}
 					
-					else if (groupFlag == true && aList.get(colCount).group.name != gName) {	// entering nested groups
+					else if (groupFlag == true && ((aList.get(colCount).group.name==null) || aList.get(colCount).group.name != gName)) {	// entering nested groups
 						
 						groupCount++;														// increment the group counter
 						groupFlag = true;													// flag to track grouping
@@ -191,6 +211,8 @@ public class xmlFormat {
 			// display XML output to the console
 			System.out.println("</This Query>");
 			
+			
+			DTD(rSet,aList);
 		} catch (SQLException e) {		// catch SQLException
 			e.printStackTrace();		// display stack trace for thrown exception
 		}
@@ -200,11 +222,61 @@ public class xmlFormat {
 	
 	
 	
-	public static void DTD(ResultSet ret, ArrayList<Attribute> lst) {		//when this function is called it will print the DTD Information
-		
-		
+	public static void DTD(ResultSet ret, ArrayList<Attribute> lst){		//when this function is called it will print the DTD Information
+		int counter = 0;
+		int STnum = 0;
+		int EDnum = 0;
+		int length = lst.size();
+		boolean flag= false;
+		String asdf ="";
+	System.out.println(" \n \n \n");
+	System.out.println("<?xml version ='1.0'?>");
 	
 	
+	while(!flag){
+		asdf =lst.get(counter).tableName;
+	System.out.println("<!DOCTYPE "+ asdf+ " [ \n" );
+	System.out.print("<!ELEMENT " + asdf+ " (" ) ;
+	STnum = counter ;
+	System.out.print(lst.get(counter++).name );
+	
+	 while((counter< length) &&  asdf.equals(lst.get(counter).tableName))
+	{
+		System.out.print(", " + lst.get(counter++).name);
+	}
+	System.out.print(")> \n \n");
+	EDnum = counter;
+	counter = STnum;
+	
+	while(counter< (EDnum)){
+	System.out.println("<!ELEMENT  " + lst.get(counter++).name + " (#PCDATA)> \n");
+	}
+	
+	System.out.println("]> \n");
+	
+	if(flag == false && ((counter) == length)){
+		flag =true;
+		counter++;
+	}
+	
+	}
+	
+	}
+	public static void pDTD(ArrayList<Attribute> lst){
+	int counter = 0;
+	int length = lst.size();
+String d = "";
+		 while(counter< length)
+		 {
+			 if(!lst.get(counter).tableName.equals(d))
+				 {
+				 d = lst.get(counter).tableName;
+				 System.out.println("<!DOCTYPE " + d+ " INFORMTATION \""+ d + "_Info.dtd\">");
+				
+				 }
+			counter++;
+			}
+		 
 	}
 	
 	public static void XSD (ResultSet ret, ArrayList<Attribute> lst) {		//when this function is called it will print XSD 
@@ -243,5 +315,10 @@ public class xmlFormat {
 			System.out.println("</xsd:complexType>");
 			System.out.println("</schema>");
 		}
+	}
+	
+	public static void Parray(ArrayList<Attribute> alist){
+		
+		
 	}
 }
