@@ -265,13 +265,13 @@ public class xmlFormat {
 		
 		else if (selection.equals("2"))
 		{
-			Sarray(dList,"XML.txt");
+			Sarray(dList,"XMLFile.xml");
 		}
 		
 		else
 		{
 			Parray(dList);
-			Sarray(dList,"XML.txt");
+			Sarray(dList,"XMLFile.xml");
 		}
 		
 		dtdList = DTD(rSet, aList);
@@ -304,16 +304,16 @@ public class xmlFormat {
 		
 		else if (selXSD.equals("2"))
 		{
-			Sarray(dtdList,"dtd.txt");
-			Sarray(xsdList,"xsd.txt");
+			Sarray(dtdList,"dtdFile.dtd");
+			Sarray(xsdList,"xsdFile.xsd");
 		}
 		
 		else
 		{
 			Parray(dtdList);
 			Parray(xsdList);
-			Sarray(dtdList,"dtd.txt");
-			Sarray(xsdList,"xsd.txt");
+			Sarray(dtdList,"dtdFile.dtd");
+			Sarray(xsdList,"xsdFile.xsd");
 		}
 	}
 	
@@ -438,7 +438,7 @@ String d = "";
 		int counter = 0;
 		int length = amsd.size();
 		int length1 = aList.size();
-		try(  PrintWriter mout = new PrintWriter( Filename,"UTF-8" )  ){	//creates file xml.txt will overwrite if already exist
+		try(  PrintWriter mout = new PrintWriter( Filename,"UTF-8" )  ){	//creates file xmlFile.xml will overwrite if already exist
 			while (i< length){
 				
 				if(i==1){
@@ -448,7 +448,7 @@ String d = "";
 						 if(!aList.get(counter).tableName.equals(d))
 							 {
 							 d = aList.get(counter).tableName;
-							 mout.println("<!DOCTYPE " + d+ " INFORMTATION \""+ d + "_Info.dtd\">");		
+							 mout.println("<!DOCTYPE " + d+ " INFORMATION \""+ d + "_Info.dtd\">");		
 							 }
 						counter++;
 						}
