@@ -40,7 +40,10 @@ public class SQLtoXMLConverter {
 				queryResult = db.query(generatedQuery);
 				
 				// Generate XML - pass queryResult and parseResult.attrList
-				xmlResult = new xmlFormat(queryResult, parseResult.attrList);
+				if(queryResult != null)
+					xmlResult = new xmlFormat(queryResult, parseResult.attrList);
+				
+				queryResult = null;
 				
 			}
 			

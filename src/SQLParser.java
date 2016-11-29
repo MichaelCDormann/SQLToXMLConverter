@@ -300,13 +300,16 @@ public class SQLParser {
 			getNextToken();
 			updateQuery(tmpAttrName);
 			
+			// if table name is included in attribute reference, strip it
+			if(tmpAttrName.contains("."))
+				tmpAttrName = tmpAttrName.split("\\.")[1];
+			
 			// check if next matches AS for alias
 			if(nextTokenMatch("as")){
 				
 				if(isNextID()){
 					
 					String tmpAlias = getNextVal();
-					System.out.println(attributes.get(tmpAttrName));
 					this.attrList.add(  new Attribute(tmpAttrName, getTableName(tmpAttrName), tmpAlias)  );
 					getNextToken();
 					
@@ -471,6 +474,10 @@ public class SQLParser {
 			// remove attribute ID from list
 			getNextToken();
 			updateQuery(tmpAttrName);
+			
+			// if table name is included in attribute reference, strip it
+			if(tmpAttrName.contains("."))
+				tmpAttrName = tmpAttrName.split("\\.")[1];
 			
 			// check if next matches AS for alias
 			if(nextTokenMatch("as")){
