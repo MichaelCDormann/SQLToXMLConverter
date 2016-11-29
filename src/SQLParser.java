@@ -399,7 +399,7 @@ public class SQLParser {
 	
 	// state 8
 	public void groupLoop() {
-		Group currGroup = new Group("null");
+		Group currGroup = new Group(null);
 		this.groupStack.push( currGroup );
 		
 		if(nextTokenMatch("+")) {
