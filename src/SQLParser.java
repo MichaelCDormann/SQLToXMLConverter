@@ -108,7 +108,7 @@ public class SQLParser {
 		// call start method -- state 1 of FSM
 		startState();
 		
-		System.out.println(generatedQuery);
+		/*System.out.println(generatedQuery);
 		for(int i = 0; i < this.attrList.size(); i++) {
 			Attribute attr = this.attrList.get(i);
 			System.out.println("" + attr.name + " " + attr.tableName + " " + attr.alias + " ");
@@ -116,7 +116,7 @@ public class SQLParser {
 				System.out.println("\t" + attr.compTo.name);
 			if(attr.group != null)
 				System.out.println("\t" + attr.group.name + " " + (attr.group.compTo != null? attr.group.compTo.name : "null"));
-		}
+		}*/
 		ParseResult result = new ParseResult(this.generatedQuery, this.attrList);
 		return result;
 	}
