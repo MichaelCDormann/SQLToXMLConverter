@@ -96,8 +96,6 @@ public class SQLParser {
 			
 		}
 		
-		System.out.println(tmpQueryEnd);
-		
 		generatedQuery = "";
 		
 		this.tokenList = new ArrayList<String>();
@@ -128,7 +126,6 @@ public class SQLParser {
 				System.out.println("\t" + attr.group.name + " " + (attr.group.compTo != null? attr.group.compTo.name : "null"));
 		}*/
 		this.generatedQuery += tmpQueryEnd;	// tack on where info if exists
-		System.out.println(this.generatedQuery);
 		ParseResult result = new ParseResult(this.generatedQuery, this.attrList);
 		return result;
 	}
