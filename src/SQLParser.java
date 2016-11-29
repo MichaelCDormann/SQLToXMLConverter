@@ -21,6 +21,7 @@ public class SQLParser {
 		
 		// set local pointer for passed Database object list 
 		this.db = db;
+		this.tableList = new ArrayList<String>();
 		
 	}
 	
@@ -234,6 +235,18 @@ public class SQLParser {
 				updateQuery("from");
 				//call 4
 				fromLoop();
+				
+				//TODO handle build attributeList from tableList info
+				for(int i = 0; i < this.tableList.size(); i++){
+					// for each table grab attribute list
+					ArrayList<String> tableAttr = this.attributes.get(this.tableList.get(i).toUpperCase());
+					for(int j = 0; j < tableAttr.size(); j++){
+						// for each attribute in list, create attribute and add to attrList
+						Attribute tmpAttr = new Attribute(tableAttr.get(j), tableList.get(i));
+						this.attrList.add(tmpAttr);
+					}
+					
+				}
 			} else {
 				try {
 					throw new ParseException("'From' was expected after '*'");
@@ -360,6 +373,12 @@ public class SQLParser {
 		String remaining = "";
 		for(int i = 0; i < this.tokenList.size(); i++) {
 			remaining += (" " + this.tokenList.get(i));
+			
+			// if we have a table name add to the list
+			if(this.attributes.containsKey(this.tokenList.get(i).toUpperCase())){
+				this.tableList.add(this.tokenList.get(i));
+			}
+			
 		}
 		this.generatedQuery += remaining;
 	}
