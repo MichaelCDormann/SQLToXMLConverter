@@ -70,6 +70,14 @@ public class SQLParser {
 		startState();
 		
 		System.out.println(generatedQuery);
+		for(int i = 0; i < this.attrList.size(); i++) {
+			Attribute attr = this.attrList.get(i);
+			System.out.println("" + attr.name + " " + attr.tableName + " " + attr.alias + " ");
+			if(attr.compTo != null)
+				System.out.println("\t" + attr.compTo.name);
+			if(attr.group != null)
+				System.out.println("\t" + attr.group.name + " " + attr.group.compTo);
+		}
 		
 	}
 	
@@ -247,7 +255,8 @@ public class SQLParser {
 				if(isNextID()){
 					
 					String tmpAlias = getNextVal();
-					this.attrList.add(  new Attribute(tmpAttrName, attributes.get(tmpAttrName), tmpAlias)  );
+					System.out.println(attributes.get(tmpAttrName));
+					this.attrList.add(  new Attribute(tmpAttrName, attributes.get(tmpAttrName.toUpperCase()), tmpAlias)  );
 					getNextToken();
 					updateQuery(tmpAlias);
 					
@@ -261,7 +270,7 @@ public class SQLParser {
 					
 			}else{
 				// no alias
-				this.attrList.add(  new Attribute(tmpAttrName, attributes.get(tmpAttrName))  );
+				this.attrList.add(  new Attribute(tmpAttrName, attributes.get(tmpAttrName.toUpperCase()))  );
 			}
 			
 			attributeLoop();
@@ -286,7 +295,7 @@ public class SQLParser {
 				if(isNextID()){
 					
 					String tmpAlias = getNextVal();
-					Attribute tmpAttr = new Attribute(tmpAttrName, attributes.get(tmpAttrName), tmpAlias);
+					Attribute tmpAttr = new Attribute(tmpAttrName, attributes.get(tmpAttrName.toUpperCase()), tmpAlias);
 					tmpAttr.addCompression(this.attrList.get(this.attrList.size()-1));
 					this.attrList.add(tmpAttr);
 					getNextToken();
@@ -302,7 +311,7 @@ public class SQLParser {
 					
 			}else{
 				// no alias
-				Attribute tmpAttr = new Attribute(tmpAttrName, attributes.get(tmpAttrName));
+				Attribute tmpAttr = new Attribute(tmpAttrName, attributes.get(tmpAttrName.toUpperCase()));
 				tmpAttr.addCompression(this.attrList.get(this.attrList.size()-1));
 				this.attrList.add(tmpAttr);
 			}
@@ -416,7 +425,7 @@ public class SQLParser {
 				if(isNextID()){
 					
 					String tmpAlias = getNextVal();
-					Attribute tmpAttr = new Attribute(tmpAttrName, attributes.get(tmpAttrName), tmpAlias);
+					Attribute tmpAttr = new Attribute(tmpAttrName, attributes.get(tmpAttrName.toUpperCase()), tmpAlias);
 					tmpAttr.addGroup(this.groupStack.peek());
 					this.attrList.add(tmpAttr);
 					getNextToken();
@@ -432,7 +441,7 @@ public class SQLParser {
 					
 			}else{
 				// no alias					
-				Attribute tmpAttr = new Attribute(tmpAttrName, attributes.get(tmpAttrName));
+				Attribute tmpAttr = new Attribute(tmpAttrName, attributes.get(tmpAttrName.toUpperCase()));
 				tmpAttr.addGroup(this.groupStack.peek());
 				this.attrList.add(tmpAttr);
 			}
