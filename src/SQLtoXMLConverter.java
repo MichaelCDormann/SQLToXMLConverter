@@ -10,11 +10,11 @@ public class SQLtoXMLConverter {
 				
 		// Create Database and SQLParser objects to be used in the rest of the program
 		Database db = new Database("jdbc:oracle:thin:@olympia.unfcsd.unf.edu:1521:dworcl", "ozzieosprey", "mytastytacos");
-		ArrayList<String> attrList = new ArrayList<String>(); 
 		SQLParser parser;
 		ParseResult parseResult;
 		ResultSet queryResult;
 		String generatedQuery;
+		xmlFormat xmlResult;
 		
 		// Create strings to keep track of menu results
 		String menuState = "NONE";
@@ -23,9 +23,6 @@ public class SQLtoXMLConverter {
 		
 		// Main loop for the program
 		while(!menuState.equals("3") && !menuState.equals("")) {
-			// clear the attribute list
-			attrList.clear();
-			
 			// Print the menu and capture the result
 			result = menu();
 			
@@ -43,6 +40,7 @@ public class SQLtoXMLConverter {
 				queryResult = db.query(generatedQuery);
 				
 				// Generate XML - pass queryResult and parseResult.attrList
+				xmlResult = new xmlFormat(queryResult, parseResult.attrList);
 				
 			}
 			

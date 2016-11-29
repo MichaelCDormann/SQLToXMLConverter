@@ -19,6 +19,7 @@ import java.util.Scanner;
 public class xmlFormat {
 	
 	//for testing purposes
+
 	public static void main(String[] args) {
 		ArrayList<Attribute> testList = new ArrayList<Attribute>();
    		
@@ -54,9 +55,10 @@ public class xmlFormat {
 		
 
 		ResultSet adsf=	parser.query("SELECT * FROM person");
+
+	public xmlFormat(ResultSet ret, ArrayList<Attribute> lst){
+		XML(ret,lst);
 		
-		XML(adsf,testList);
-		parser.close();
 	}
 	
 	static ResultSet rSet;					// make ResultSet global
@@ -111,11 +113,11 @@ public class xmlFormat {
 			//System.out.println("<?xml version ='1.0'?>");
 			//System.out.println("<This Query>");
 
-			System.out.println("<?xml version ='1.0'?>");
+		//	System.out.println("<?xml version ='1.0'?>");
 			
-			pDTD(aList);
 			
-			System.out.println("<This Query>");
+			
+			dList.add("<This Query>");
 
 			while (rSet.next()) {		// move ResultSet to the next data row
 				
@@ -427,6 +429,8 @@ String d = "";
 		int i = 0;
 		
 		while (i< length){						//for the length of the array of strings 
+			if(i ==1)
+				pDTD(aList);
 			System.out.println(alist.get(i));
 			i++;
 		}
