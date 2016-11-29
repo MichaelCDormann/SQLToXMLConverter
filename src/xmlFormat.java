@@ -83,6 +83,7 @@ public class xmlFormat {
 		String tempGroup = "";					// used to track the name of the current group
 		String tempAtname = "";					// used as a temporary holder for the Attribute object
 		String prevAtName = "";					// used to track the previous Attribute object
+		
 		Scanner input = new Scanner(System.in);
 		String selection = "";
 		
@@ -319,14 +320,14 @@ public class xmlFormat {
 			printXSD(xsdList);
 			saveDTD(dtdList);
 			saveXSD(xsdList);
+		}
 	}
 	
-	
-	
-
-	public static ArrayList DTD(ResultSet ret, ArrayList<Attribute> lst) {		//when this function is called it will print the DTD Information
+	public static ArrayList DTD(ResultSet ret, ArrayList<Attribute> lst){		//when this function is called it will print the DTD Information
 		
+
 		ArrayList<String> dtdlist = new ArrayList<String>();
+
 		int counter = 0;
 		int STnum = 0;
 		int EDnum = 0;
