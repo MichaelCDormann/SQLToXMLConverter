@@ -9,6 +9,9 @@
  */
 
 //import Java libraries
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.sql.*;
 import java.util.ArrayList;
 
@@ -317,8 +320,32 @@ String d = "";
 		}
 	}
 	
-	public static void Parray(ArrayList<Attribute> alist){
+	public static void Parray(ArrayList<String> alist){			//prints the array of strings 
+		int length = alist.size();
+		int i = 0;
 		
+		while (i< length){						//for the length of the array of strings 
+			System.out.println(alist.get(i));
+			i++;
+		}
+	}
+	public static void Sarray(ArrayList<String> amsd){			//saves the array of Strings
+		int i = 0;
+		int length = amsd.size();
+		try(  PrintWriter mout = new PrintWriter( "XML.txt","UTF-8" )  ){	//creates file xml.txt will overwrite if already exist
+			while (i< length){
+				mout.println(amsd.get(i));
+				i++;
+			}
+			
+			mout.close();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (UnsupportedEncodingException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		
 	}
 }
