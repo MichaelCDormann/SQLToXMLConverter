@@ -161,7 +161,7 @@ public class xmlFormat {
 					if (alias == null)				// check the current group for an alias
 						alias = colName;			// set alias to column name if alias does not exist
 					
-					prevAtName = rSet.getString(colName);
+					prevAtName = rSet.getString(colCount+1);
 							
 					dList.add(String.format("%" + (4 * tabCnt) + "s", " ") + 
 							"<" + alias.toUpperCase() + " table=\""+ tabName + "\" name=\"" + colName +"\">" +
